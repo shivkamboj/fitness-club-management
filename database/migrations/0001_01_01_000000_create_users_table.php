@@ -15,6 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('phone', 30)->nullable();
+            $table->string('gym_name')->nullable();
+            $table->tinyInteger('role')->default(0)->comment('0 = Gym Member, 1 = Super Admin, 2 = Gym Owner, 3 = Staff, 4 = Trainer, 5 = Member');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

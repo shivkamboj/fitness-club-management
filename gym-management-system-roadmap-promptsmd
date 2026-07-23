@@ -1,0 +1,335 @@
+# Gym Management System — Day-by-Day Build Prompts
+
+**How to use this:** Each day has a ready-to-paste prompt for Claude Code (or another AI coding
+assistant). Paste one prompt per session, review/test the output, commit, then move to the next
+day. Assumes Laravel 11 + Blade + Bootstrap 5 (matching the landing page already built) + MySQL.
+
+Adjust package names (payment gateway, SMS provider) to your actual region/provider before use.
+
+---
+
+## WEEK 1 — Project Setup, Auth & Roles
+
+### Day 1 — Project scaffold
+```
+Set up a fresh Laravel 11 project called "gym-management-system". Configure .env for MySQL,
+install Laravel Breeze with Blade stack, and get the default auth scaffolding running.
+Then replace the default Breeze login/register views with the custom dark+orange themed
+login.blade.php and register.blade.php I already have (I'll paste them). Confirm the app
+boots with `php artisan serve` and login/register work end-to-end.
+```
+
+### Day 2 — Roles & permissions
+```
+Install spatie/laravel-permission. Create these roles: super-admin, gym-owner, staff, trainer,
+member. Create a seeder that sets up these roles and assigns super-admin to the first registered
+user. Add middleware to protect route groups by role. Show me the migration, seeder, and
+route group structure.
+```
+
+### Day 3 — Gym/Studio profile model
+```
+Create a Gym model and migration with fields: name, slug, logo, address, city, state, phone,
+email, opening_hours (json), timezone, owner_id (FK to users), status (active/suspended).
+Add a multi-step onboarding wizard (Blade + Bootstrap 5, matching my dark/orange theme) that
+lets a new gym-owner create their gym profile right after signup: Step 1 basic info, Step 2
+branding/logo upload, Step 3 opening hours, Step 4 confirm & finish.
+```
+
+### Day 4 — Base dashboard layout
+```
+Create a shared authenticated dashboard layout (resources/views/layouts/dashboard.blade.php)
+with a collapsible sidebar (dark theme, orange active-state highlight) and topbar showing the
+logged-in user's name/avatar and gym name. Sidebar links: Dashboard, Members, Plans, Classes,
+Trainers, Payments, Reports, Settings. Make it responsive (sidebar collapses to icons on
+tablet, off-canvas on mobile). Use the same CSS variables from my existing style.css.
+```
+
+### Day 5 — Member model foundation
+```
+Create a Member model + migration: name, email, phone, dob, gender, address, gym_id,
+membership_plan_id (nullable FK), join_date, status (active/inactive/frozen), profile_photo.
+Add a MemberController with index/create/store/edit/update/delete. Build the "Members" list
+page in the dashboard layout: searchable/sortable table (DataTables or simple Bootstrap table
+with search input), status badges (green=active/orange=expiring soon/red=expired).
+```
+
+---
+
+## WEEK 2 — Membership Plans & Subscriptions
+
+### Day 6 — Membership plans CRUD
+```
+Create a MembershipPlan model + migration: name, price, duration_days, description,
+features (json array), is_active. Build full CRUD in the dashboard: a "Plans" page with
+pricing-card-style previews (reuse the pricing-card component style from my landing page,
+but functional with edit/delete buttons for gym-owner role only).
+```
+
+### Day 7 — Subscription/assignment logic
+```
+Create a Subscription model + migration linking member_id, plan_id, start_date, end_date,
+amount_paid, status (active/expired/cancelled). Add logic so when a plan is assigned to a
+member, end_date is auto-calculated from plan duration. Add an "Assign Plan" button on the
+member detail page that opens a modal to select a plan and confirm.
+```
+
+### Day 8 — Member detail page
+```
+Build a Member Profile page showing: personal info, current subscription with days remaining
+(progress bar styled like the site's orange accent), subscription history table, and quick
+action buttons: Renew, Freeze, Cancel, Edit.
+```
+
+### Day 9 — Expiry status automation
+```
+Create a scheduled Artisan command (php artisan memberships:check-expiry) that runs daily via
+the Laravel scheduler, marks subscriptions as 'expired' when end_date has passed, and flags
+members whose plan expires within 3 days as 'expiring soon'. Add a dashboard widget showing
+counts: Active, Expiring in 3 days, Expired this week.
+```
+
+### Day 10 — Dashboard analytics v1
+```
+Build the main admin Dashboard home page with 4 stat cards (Total Members, Active
+Subscriptions, Revenue This Month, Expiring This Week) styled like the pricing cards
+(dark surface, orange icon accents), plus a simple line chart (Chart.js) showing new
+member sign-ups over the last 30 days.
+```
+
+---
+
+## WEEK 3 — Payments
+
+### Day 11 — Payment gateway setup
+```
+Integrate Razorpay (or Stripe if targeting international customers — ask me which before
+starting) into Laravel for one-time and recurring plan payments. Set up the SDK, API keys in
+.env, and a Payment model/migration: subscription_id, amount, gateway_transaction_id, status,
+paid_at.
+```
+
+### Day 12 — Checkout flow
+```
+Build a member-facing "Renew/Buy Plan" checkout page: plan summary, amount, and a Pay Now
+button that opens the Razorpay checkout modal. On success, create a Payment record, update
+the Subscription, and redirect to a styled success page. On failure, show a retry option.
+```
+
+### Day 13 — Payment history & invoices
+```
+Add a Payments list page (admin) showing all transactions with filters by date range and
+status. Add a member-facing "My Payments" page. Generate a simple PDF invoice for each
+successful payment (use the pdf skill/DomPDF) with gym branding, and a "Download Invoice"
+button.
+```
+
+### Day 14 — Webhooks & reconciliation
+```
+Add a webhook endpoint to handle Razorpay/Stripe payment events (payment.captured,
+payment.failed) so subscription status updates even if the user closes the browser before
+redirect. Add signature verification for security.
+```
+
+### Day 15 — Revenue reporting
+```
+Add a Reports > Revenue page: total revenue by month (bar chart), revenue by plan type (pie
+chart), and an exportable CSV of all transactions in a date range.
+```
+
+---
+
+## WEEK 4 — Class Booking System
+
+### Day 16 — Class & schedule models
+```
+Create GymClass model (name, description, trainer_id, capacity, duration_minutes) and
+ClassSchedule model (class_id, day_of_week or specific_date, start_time, recurring bool).
+Build admin CRUD pages to create classes and set weekly recurring schedules.
+```
+
+### Day 17 — Member-facing class calendar
+```
+Build a member-facing "Book a Class" page showing a weekly calendar view (styled with the
+dark/orange theme) of available class slots, seats remaining per slot, and a Book button.
+Prevent booking if capacity is full — show "Join Waitlist" instead.
+```
+
+### Day 18 — Booking logic & waitlist
+```
+Create a ClassBooking model (member_id, schedule_id, status: booked/waitlisted/cancelled/
+attended). Implement booking logic: capacity check, auto-promote first waitlisted member
+when someone cancels, and prevent double-booking the same slot.
+```
+
+### Day 19 — Booking notifications
+```
+Send an email (and prepare a stub for WhatsApp/SMS via a NotificationService interface) when:
+a booking is confirmed, a member is promoted from waitlist, or a class is cancelled by admin.
+Use Laravel Notifications for this.
+```
+
+### Day 20 — Admin class roster & check-in
+```
+Build an admin page per class session showing the roster of booked members with a "Mark
+Attended" checkbox for each, and a live seats-remaining counter. Add a simple QR-code
+check-in option: generate a QR per member that staff can scan to mark attendance.
+```
+
+---
+
+## WEEK 5 — Trainer Booking & Attendance
+
+### Day 21 — Trainer profiles
+```
+Create Trainer model (linked to a user with 'trainer' role): bio, specialties (json),
+certifications, profile_photo, hourly_rate. Build a public Trainer directory page (reusing
+the site's trainer-profile card style) and an admin CRUD for managing trainers.
+```
+
+### Day 22 — Trainer availability
+```
+Create a TrainerAvailability model (trainer_id, day_of_week, start_time, end_time). Build a
+trainer-facing "My Availability" page where trainers set their own weekly working hours.
+```
+
+### Day 23 — Personal training booking flow
+```
+Build a member-facing "Book a Trainer" flow: pick trainer -> pick available date/time slot
+(computed from TrainerAvailability minus existing bookings) -> confirm booking. Create a
+PTBooking model (member_id, trainer_id, date, start_time, end_time, status).
+```
+
+### Day 24 — General attendance/check-in
+```
+Add a gym-wide check-in system independent of classes: each member gets a QR code (shown on
+their profile / emailed), front-desk staff have a "Check-In" scanner page (can use a simple
+webcam-based QR scanner JS library), and each check-in logs a timestamp to an Attendance
+table.
+```
+
+### Day 25 — Attendance reports
+```
+Build a Reports > Attendance page: daily footfall chart (last 30 days), busiest hours
+heatmap, and per-member attendance history (useful for gym owners to spot inactive members
+at risk of churn).
+```
+
+---
+
+## WEEK 6 — Renewals, Polish & Launch Prep
+
+### Day 26 — Automated renewal reminders
+```
+Extend the memberships:check-expiry scheduled command to send renewal reminder emails at
+7 days, 3 days, and 1 day before expiry, plus an "expired" notice. Make templates match the
+site's branding. Add an unsubscribe/preferences toggle per member.
+```
+
+### Day 27 — Role-based permission audit
+```
+Go through every route and controller and verify role-based access is correctly enforced
+(a trainer shouldn't see billing, a member shouldn't see other members' data, staff shouldn't
+access owner-only settings). Write a checklist of what you tested and flag any gaps found.
+```
+
+### Day 28 — Settings & gym customization
+```
+Build a Settings page for gym-owners: update gym profile/branding, manage staff accounts
+(invite staff by email with role assignment), configure notification preferences, and manage
+payment gateway keys per gym (if multi-tenant).
+```
+
+### Day 29 — Testing pass
+```
+Write PHPUnit/Pest feature tests covering: registration, login, plan assignment, subscription
+expiry logic, class booking capacity limits, and payment webhook handling. Fix any bugs
+found.
+```
+
+### Day 30 — Deployment prep
+```
+Prepare the app for production: set up .env.production template, configure queue worker for
+notifications, set up the Laravel scheduler (cron), add error monitoring (e.g. Sentry stub),
+and write a DEPLOYMENT.md with step-by-step server setup instructions (PHP version, extensions,
+composer install --no-dev, migrate --force, storage link, queue:work supervisor config).
+```
+
+---
+
+## Phase 3 — Engagement (Weekly prompts, Weeks 7–10)
+
+### Week 7 — Workout plans
+```
+Build a Workout Plan module: trainers create exercise-based plans (exercise name, sets, reps,
+rest, video link) and assign them to members. Members see their assigned plan on a "My
+Workouts" page and can check off completed exercises per day.
+```
+
+### Week 8 — Diet plans
+```
+Build a Diet Plan module: trainers create meal plans (meal name, time, food items, calories/
+macros) and assign to members. Add a simple "My Diet Plan" page for members with daily meal
+checklist.
+```
+
+### Week 9 — Push notifications
+```
+Integrate Firebase Cloud Messaging for web/mobile push notifications. Trigger pushes for:
+class reminder 1 hour before, plan expiry, new workout/diet plan assigned, and admin
+announcements.
+```
+
+### Week 10 — Progress tracking
+```
+Build a Progress Tracking module: members log weight, body measurements, and optionally
+upload progress photos on a schedule (weekly/monthly). Show a progress chart (Chart.js) on
+their profile and let trainers view client progress from the trainer dashboard.
+```
+
+---
+
+## Phase 4 — Scale (Weekly prompts, Weeks 11–16+)
+
+### Week 11–12 — Multi-branch support
+```
+Refactor the schema to properly support multi-branch gyms: add a Branch model under Gym,
+move Members/Classes/Trainers to be branch-scoped, and add a branch switcher in the
+dashboard for owners managing multiple locations. Add branch-level reporting.
+```
+
+### Week 13 — Advanced analytics
+```
+Build an analytics v2 dashboard: churn rate calculation, revenue trends with month-over-month
+comparison, trainer performance (sessions booked, ratings), and class utilization rates
+(booked vs capacity over time).
+```
+
+### Week 14–16 — Mobile app foundation
+```
+Set up a Flutter (or React Native) mobile app project that consumes the Laravel backend via
+a versioned REST API (Laravel Sanctum for token auth). Start with: login/register, view
+membership status, book a class, and view workout plan — the four highest-usage screens.
+```
+
+### Ongoing — White-label / marketing tie-in
+```
+Add a "branding" settings tab so gym-owners on a higher-tier plan can customize their member
+portal's colors/logo. Connect the public landing page contact form to auto-create a lead in
+a simple CRM table, and add an admin "Leads" page for the Gym Website Builder sales team to
+track inquiries from the marketing site into paying gym-management customers.
+```
+
+---
+
+## Notes on using these prompts effectively
+
+- **One prompt per day/session** — don't batch multiple days into one Claude Code run; review
+  and test between each so bugs don't compound.
+- **Paste existing files first** — for Days 1, 4, 6 especially, paste in your existing
+  landing.blade.php components/CSS so the AI matches your established theme instead of
+  guessing at a new one.
+- **Adjust the payment gateway** (Day 11) to your actual target market — Razorpay/PayU for
+  India, Stripe/PayPal for international.
+- **Re-order for your priorities** — if payments matter more than class booking for your
+  first paying customer, swap Week 3 and Week 4.
