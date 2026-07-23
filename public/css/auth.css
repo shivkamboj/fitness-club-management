@@ -1,0 +1,282 @@
+/* ==========================================================================
+   Gym Website Builder — Auth Pages (Login / Signup)
+   Extends style.css — relies on the same CSS variables/tokens.
+   ========================================================================== */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  background: var(--gwb-bg);
+}
+
+/* ---------------------------- Side panel (branding) ---------------------------- */
+.auth-side {
+  position: relative;
+  flex: 1 1 46%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3rem;
+  background:
+  linear-gradient(
+      90deg,
+      rgba(10, 10, 14, 0.80) 0%,   /* Left: 80% dark */
+      rgba(10, 10, 14, 0.75) 30%,
+      rgba(10, 10, 14, 0.45) 60%,
+      rgba(10, 10, 14, 0.30) 100%  /* Right: 70% visible */
+    ),
+    url("../images/login.avif") center/cover no-repeat;
+  overflow: hidden;
+}
+
+.register-img .auth-side {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(10, 10, 14, 0.80) 0%,
+      rgba(10, 10, 14, 0.75) 30%,
+      rgba(10, 10, 14, 0.45) 60%,
+      rgba(10, 10, 14, 0.30) 100%
+    ),
+    url("../images/register.jpg") center 30px /cover no-repeat;
+    overflow: hidden;
+}
+
+.auth-side::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(-45deg, rgba(255,90,31,0.06) 0 2px, transparent 2px 34px);
+  pointer-events: none;
+}
+@media (max-width: 991.98px) {
+  .auth-side { display: none; }
+}
+
+.auth-side-content { position: relative; }
+
+.auth-side-quote {
+  position: relative;
+  max-width: 420px;
+}
+.auth-side-quote .stars { color: var(--gwb-orange-light); margin-bottom: 1rem; }
+.auth-side-quote p {
+  font-size: 1.15rem;
+  color: var(--gwb-text);
+  line-height: 1.6;
+}
+.auth-side-quote .who {
+  color: var(--gwb-text-faint);
+  font-size: 0.85rem;
+  font-family: var(--font-mono);
+  margin-top: 0.8rem;
+}
+
+.auth-side-stats {
+  position: relative;
+  display: flex;
+  gap: 2.4rem;
+}
+.auth-side-stats .num {
+  font-family: var(--font-mono);
+  color: var(--gwb-orange-light);
+  font-size: 1.6rem;
+  font-weight: 700;
+  display: block;
+}
+.auth-side-stats .label {
+  color: var(--gwb-text-faint);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ---------------------------- Form panel ---------------------------- */
+.auth-form-panel {
+  flex: 1 1 54%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.5rem;
+}
+
+.auth-box {
+  width: 100%;
+  max-width: 500px;
+}
+
+.register .auth-box {
+  width: 100%;
+  max-width: 800px;
+}
+
+.auth-back-link {
+  color: var(--gwb-text-muted);
+  font-size: 0.88rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  transition: color 0.2s ease;
+}
+.auth-back-link:hover { color: var(--gwb-orange-light); }
+
+.auth-box h1 {
+  font-size: clamp(1.7rem, 3vw, 2.1rem);
+  margin-bottom: 0.5rem;
+}
+.auth-box .auth-sub {
+  color: var(--gwb-text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 2rem;
+}
+
+.auth-alert {
+  background: rgba(255,90,31,0.1);
+  border: 1px solid rgba(255,90,31,0.35);
+  color: var(--gwb-orange-light);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  font-size: 0.88rem;
+  margin-bottom: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.auth-alert.success {
+  background: rgba(46, 204, 113, 0.1);
+  border-color: rgba(46, 204, 113, 0.35);
+  color: #6fe0a0;
+}
+
+.form-label-gwb {
+  color: var(--gwb-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.input-group-gwb {
+  position: relative;
+}
+.input-group-gwb i.leading-icon {
+  position: absolute;
+  left: 1rem; top: 50%;
+  transform: translateY(-50%);
+  color: var(--gwb-text-faint);
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+.input-group-gwb .form-control-gwb {
+  padding-left: 2.6rem;
+}
+.input-group-gwb .toggle-password {
+  position: absolute;
+  right: 1rem; top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--gwb-text-faint);
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0;
+}
+.input-group-gwb .toggle-password:hover { color: var(--gwb-orange-light); }
+
+.form-check-gwb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--gwb-text-muted);
+}
+.form-check-gwb input {
+  width: 16px; height: 16px;
+  accent-color: var(--gwb-orange);
+}
+
+.auth-forgot {
+  color: var(--gwb-orange-light);
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+
+.password-strength {
+  height: 4px;
+  border-radius: 100px;
+  background: var(--gwb-border);
+  margin-top: 0.6rem;
+  overflow: hidden;
+}
+.password-strength .bar {
+  height: 100%;
+  width: 0%;
+  border-radius: 100px;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+.password-strength-label {
+  font-size: 0.76rem;
+  color: var(--gwb-text-faint);
+  margin-top: 0.3rem;
+  display: block;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--gwb-text-faint);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 1.8rem 0;
+}
+.auth-divider::before, .auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--gwb-border);
+}
+
+.btn-social {
+  background: var(--gwb-surface);
+  border: 1px solid var(--gwb-border);
+  color: var(--gwb-text);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+.btn-social:hover {
+  border-color: var(--gwb-orange);
+  background: var(--gwb-surface-2);
+  color: var(--gwb-text);
+}
+
+.auth-footer-note {
+  text-align: center;
+  color: var(--gwb-text-muted);
+  font-size: 0.9rem;
+  margin-top: 2rem;
+}
+.auth-footer-note a {
+  color: var(--gwb-orange-light);
+  font-weight: 600;
+}
+
+.invalid-feedback-gwb {
+  color: #ff6b6b;
+  font-size: 0.8rem;
+  margin-top: 0.35rem;
+  display: block;
+}
+.form-control-gwb.is-invalid-gwb {
+  border-color: #ff6b6b;
+}
