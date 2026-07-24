@@ -17,6 +17,13 @@
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/auth.css') }}">
+
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('gwb_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
 </head>
 <body>
 
@@ -61,9 +68,15 @@
         {{-- ============================= RIGHT FORM PANEL ============================= --}}
         <div class="auth-form-panel">
             <div class="auth-box">
-                <a href="{{ url('/') }}" class="auth-back-link">
-                    <i class="fa-solid fa-arrow-left"></i> Back to Home
-                </a>
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <a href="{{ url('/') }}" class="auth-back-link mb-0">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Home
+                    </a>
+                    <button type="button" class="theme-toggle-btn" aria-label="Toggle Light/Dark Theme">
+                        <i class="fa-solid fa-sun"></i>
+                        <span class="theme-toggle-label d-none d-sm-inline">Mode</span>
+                    </button>
+                </div>
 
                 <h1>Welcome Back</h1>
                 <p class="auth-sub">Log in to manage your gym website, membership plans, and marketing dashboard.</p>
@@ -281,6 +294,7 @@
 
     })();
     </script>
+    <script src="{{ asset('js/theme-toggle.js') }}"></script>
 
 </body>
 </html>

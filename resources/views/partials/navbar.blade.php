@@ -16,7 +16,7 @@
                 <li class="nav-item"><a class="nav-link gwb-nav-link" href="#pricing">Pricing</a></li>
                 <li class="nav-item"><a class="nav-link gwb-nav-link" href="#services">Services</a></li>
                 <li class="nav-item"><a class="nav-link gwb-nav-link" href="#how-it-works">How It Works</a></li>
-                <li class="nav-item"><a class="nav-link gwb-nav-link" href="#testimonials">Reviews</a></li>
+                {{-- <li class="nav-item"><a class="nav-link gwb-nav-link" href="#testimonials">Reviews</a></li> --}}
                 <li class="nav-item"><a class="nav-link gwb-nav-link" href="#faq">FAQ</a></li>
 
                  @auth
@@ -26,14 +26,14 @@
                         </a>
                     </li>
 
-                    <li class="nav-item mt-2 mt-lg-0 ms-lg-2">
+                    {{-- <li class="nav-item mt-2 mt-lg-0 ms-lg-2">
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-outline-light btn-gwb-sm">
                                 Logout
                             </button>
                         </form>
-                    </li>
+                    </li> --}}
                 @endauth
 
                 @guest
@@ -54,6 +54,14 @@
                 <li class="nav-item mt-2 mt-lg-0 ms-lg-3">
                     <a href="#contact" class="btn btn-gwb-primary btn-gwb-sm">Contact Us</a>
                 </li>
+
+                <li class="nav-item mt-2 mt-lg-0 ms-lg-3">
+                    <button type="button" class="theme-toggle-btn" aria-label="Toggle Light/Dark Theme">
+                        <i class="fa-solid fa-sun"></i>
+                        <span class="theme-toggle-label d-none d-sm-inline">Mode</span>
+                    </button>
+                </li>
+
 
 
             </ul>

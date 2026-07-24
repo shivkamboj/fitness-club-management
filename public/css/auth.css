@@ -280,3 +280,58 @@
 .form-control-gwb.is-invalid-gwb {
   border-color: #ff6b6b;
 }
+
+/* ==========================================================================
+   Auth Pages Light Mode Overrides
+   ========================================================================== */
+[data-theme="light"] .auth-page {
+  background: var(--gwb-bg, #f8fafc);
+}
+
+[data-theme="light"] .auth-side {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(248, 250, 252, 0.90) 0%,
+      rgba(248, 250, 252, 0.82) 30%,
+      rgba(248, 250, 252, 0.55) 60%,
+      rgba(248, 250, 252, 0.35) 100%
+    ),
+    url("../images/login.avif") center/cover no-repeat;
+}
+
+[data-theme="light"] .register-img .auth-side {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(248, 250, 252, 0.90) 0%,
+      rgba(248, 250, 252, 0.82) 30%,
+      rgba(248, 250, 252, 0.55) 60%,
+      rgba(248, 250, 252, 0.35) 100%
+    ),
+    url("../images/register.jpg") center 30px /cover no-repeat;
+}
+
+[data-theme="light"] .form-control-gwb {
+  background: #ffffff;
+  color: var(--gwb-text, #0f172a);
+  border-color: var(--gwb-border, #cbd5e1);
+}
+
+[data-theme="light"] .form-control-gwb:focus {
+  background: #ffffff;
+  border-color: var(--gwb-orange, #ff5a1f);
+  box-shadow: 0 0 0 4px rgba(255, 90, 31, 0.12);
+}
+
+[data-theme="light"] .btn-social {
+  background: #ffffff;
+  border-color: var(--gwb-border, #cbd5e1);
+  color: var(--gwb-text, #0f172a);
+}
+
+[data-theme="light"] .btn-social:hover {
+  background: var(--gwb-bg-soft, #f1f5f9);
+  border-color: var(--gwb-orange, #ff5a1f);
+}
+

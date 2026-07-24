@@ -33,6 +33,12 @@
 
     {{-- App Styles --}}
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('gwb_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
 </head>
 <body>
 
@@ -119,7 +125,7 @@
     </section>
 
     {{-- ============================= PRICING ============================= --}}
-    <section class="section bg-black" id="pricing" style="background: var(--gwb-bg-soft);">
+    <section class="section" id="pricing" style="background: var(--gwb-bg-soft);">
         <div class="container-gwb">
             <div class="text-center mx-auto mb-5" style="max-width: 640px;" data-aos="fade-up">
                 <span class="section-eyebrow">Pricing</span>
@@ -497,6 +503,7 @@
     {{-- Scripts --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="{{ asset('js/theme-toggle.js') }}"></script>
     <script src="{{ asset('js/script.js') }}"></script>
 </body>
 </html>

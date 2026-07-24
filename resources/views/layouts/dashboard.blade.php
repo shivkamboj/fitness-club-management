@@ -22,6 +22,13 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
 
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('gwb_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
+
     @stack('styles')
 </head>
 <body class="dashboard-body">
@@ -169,6 +176,12 @@
                         <span>{{ $isSuperAdmin ? 'Platform Super Admin Console' : (Auth::user()->gym_name ?? 'My Fitness Gym') }}</span>
                     </div>
 
+                    <!-- Theme Switcher Button -->
+                    <button type="button" class="theme-toggle-btn" aria-label="Toggle Light/Dark Theme">
+                        <i class="fa-solid fa-sun"></i>
+                        <span class="theme-toggle-label d-none d-lg-inline">Mode</span>
+                    </button>
+
                     <!-- User Menu Dropdown -->
                     <div class="dropdown">
                         <button class="btn btn-gwb-secondary dropdown-toggle py-2 px-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -212,6 +225,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('js/theme-toggle.js') }}"></script>
 
     @include('partials.toastr')
 
