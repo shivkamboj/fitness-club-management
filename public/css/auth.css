@@ -38,7 +38,7 @@
       rgba(10, 10, 14, 0.45) 60%,
       rgba(10, 10, 14, 0.30) 100%
     ),
-    url("../images/register.jpg") center 30px /cover no-repeat;
+    url("../images/register.jpg") center/cover no-repeat;
     overflow: hidden;
 }
 
@@ -306,10 +306,10 @@
       90deg,
       rgba(248, 250, 252, 0.90) 0%,
       rgba(248, 250, 252, 0.82) 30%,
-      rgba(248, 250, 252, 0.55) 60%,
-      rgba(248, 250, 252, 0.35) 100%
+      rgba(248, 250, 252, 0.15) 65%,
+      transparent 75%
     ),
-    url("../images/register.jpg") center 30px /cover no-repeat;
+    url("../images/register.jpg") right center/cover no-repeat;
 }
 
 [data-theme="light"] .form-control-gwb {

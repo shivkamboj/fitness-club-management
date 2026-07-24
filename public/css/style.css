@@ -843,7 +843,7 @@ h1, h2, h3, h4, .display-font {
   }
 }
 
-[data-theme="light"] .hero {
+/* [data-theme="light"] .hero {
   background:
     linear-gradient(
       90deg,
@@ -853,6 +853,19 @@ h1, h2, h3, h4, .display-font {
       rgba(248, 250, 252, 0.40) 100%
     ),
     url("../images/hero.avif") center/cover no-repeat;
+} */
+
+[data-theme="light"] .hero {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(248, 250, 252, 0.92) 0%,
+      rgba(248, 250, 252, 0.85) 30%,
+      rgba(248,250,252,0.85) 55%,
+      rgba(248,250,252,0.15) 65%,
+      transparent 75%
+    ),
+    url("../images/hero.avif") right center/cover no-repeat;
 }
 
 [data-theme="light"] .hero-badge {
