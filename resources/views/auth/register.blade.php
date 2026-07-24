@@ -130,9 +130,15 @@
                             <label for="phone" class="form-label-gwb">Phone Number</label>
                             <div class="input-group-gwb">
                                 <i class="fa-solid fa-phone leading-icon"></i>
-                                <input type="tel" id="phone" name="phone"
+                                <input type="text" id="phone" name="phone"
                                        class="form-control form-control-gwb"
-                                       placeholder="+91 90000 00000" autocomplete="tel">
+                                       placeholder="90000 00000" autocomplete="tel"
+                                       maxlength="10"
+                                        pattern="[0-9]{10}"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                                    >
+
+
                             </div>
                             {{-- Inline field error --}}
                             <span class="invalid-feedback-gwb d-none" id="err-phone"></span>

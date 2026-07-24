@@ -40,6 +40,15 @@ Route::post('/login',   [AuthController::class, 'login'])->name('login.submit');
 Route::get('/register',  [AuthController::class, 'registerForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.submit');
 
+Route::get('/verify-otp',  [AuthController::class, 'verifyOtpForm'])->name('otp.verify');
+Route::post('/verify-otp', [AuthController::class, 'verifyOtp'])->name('otp.verify.submit');
+Route::post('/resend-otp', [AuthController::class, 'resendOtp'])->name('otp.resend');
+
+Route::get('/forgot-password',  [AuthController::class, 'forgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword'])->name('password.email');
+Route::get('/reset-password',   [AuthController::class, 'resetPasswordForm'])->name('password.reset');
+Route::post('/reset-password',  [AuthController::class, 'resetPassword'])->name('password.update');
+
 Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
 
 // ── Contact ──────────────────────────────────────────────────────────────────

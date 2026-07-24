@@ -6,22 +6,27 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    /** @use HasFactory<UserFactory> */
+    use HasApiTokens, HasFactory, Notifiable;
 
-    // Role Constants matching database schema
-    const ROLE_MEMBER      = 0;
-    const ROLE_SUPER_ADMIN = 1;
-    const ROLE_GYM_OWNER   = 2;
-    const ROLE_STAFF       = 3;
-    const ROLE_TRAINER     = 4;
+    public const ROLE_MEMBER = 0;
+    public const ROLE_SUPER_ADMIN = 1;
+    public const ROLE_GYM_OWNER = 2;
+    public const ROLE_STAFF = 3;
+    public const ROLE_TRAINER = 4;
+
+    public const OTP_EXPIRY_MINUTES = 10;
+
+    public const OTP_RESEND_COOLDOWN_MINUTES = 5;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $fillable = [
         'name',
@@ -29,17 +34,21 @@ class User extends Authenticatable
         'password',
         'phone',
         'gym_name',
-        'role', // 1 = Super Admin, 2 = Gym Owner, etc.
+        'role',
+        'otp',
+        'otp_expires_at',
+        'email_verified_at',
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $hidden = [
         'password',
         'remember_token',
+        'otp',
     ];
 
     /**
@@ -51,38 +60,85 @@ class User extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'otp_expires_at' => 'datetime',
             'password' => 'hashed',
             'role' => 'integer',
         ];
     }
 
-    /**
-     * Check if user is platform Super Admin (role === 1).
-     */
     public function isSuperAdmin(): bool
     {
         return (int) $this->role === self::ROLE_SUPER_ADMIN;
     }
 
-    /**
-     * Check if user is a Gym Owner subscriber (role === 2).
-     */
     public function isGymOwner(): bool
     {
         return (int) $this->role === self::ROLE_GYM_OWNER || (int) $this->role === self::ROLE_SUPER_ADMIN;
     }
 
-    /**
-     * Get human readable role name.
-     */
     public function getRoleNameAttribute(): string
     {
         return match ((int) $this->role) {
             self::ROLE_SUPER_ADMIN => 'Super Admin',
-            self::ROLE_GYM_OWNER   => 'Gym Owner',
-            self::ROLE_STAFF       => 'Staff',
-            self::ROLE_TRAINER     => 'Trainer',
-            default                => 'Gym Member',
+            self::ROLE_GYM_OWNER => 'Gym Owner',
+            self::ROLE_STAFF => 'Staff',
+            self::ROLE_TRAINER => 'Trainer',
+            default => 'Gym Member',
         };
+    }
+
+    public function hasVerifiedEmail(): bool
+    {
+        return $this->email_verified_at !== null;
+    }
+
+    public function generateOtp(): string
+    {
+        $otp = (string) random_int(100000, 999999);
+
+        $this->forceFill([
+            'otp' => $otp,
+            'otp_expires_at' => now()->addMinutes(self::OTP_EXPIRY_MINUTES),
+        ])->save();
+
+        return $otp;
+    }
+
+    public function clearOtp(): void
+    {
+        $this->forceFill([
+            'otp' => null,
+            'otp_expires_at' => null,
+        ])->save();
+    }
+
+    public function isOtpValid(?string $otp): bool
+    {
+        return $this->getOtpError($otp) === null;
+    }
+
+    /**
+     * Return a user-facing OTP error message, or null when valid.
+     */
+    public function getOtpError(?string $otp): ?string
+    {
+        if ($this->otp === null || $this->otp_expires_at === null) {
+            return 'No OTP found. Please request a new one.';
+        }
+
+        if ($this->otp_expires_at->isPast()) {
+            return 'OTP has expired. Please request a new one.';
+        }
+
+        if ($otp === null || $otp === '' || ! hash_equals((string) $this->otp, (string) $otp)) {
+            return 'Invalid OTP. Please check the code and try again.';
+        }
+
+        return null;
+    }
+
+    public function isOtpExpired(): bool
+    {
+        return $this->otp_expires_at !== null && $this->otp_expires_at->isPast();
     }
 }

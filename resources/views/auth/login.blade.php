@@ -260,6 +260,15 @@
                     }, 1200);
 
                 } else {
+                    /* Unverified email — send user to OTP page */
+                    if (data.redirect && response.status === 403) {
+                        showToast(data.message || 'Please verify your email.', 'error');
+                        setTimeout(function () {
+                            window.location.href = data.redirect;
+                        }, 1200);
+                        return;
+                    }
+
                     /* ❌ Server validation errors — inline per field */
                     if (data.errors && Object.keys(data.errors).length) {
                         Object.entries(data.errors).forEach(function (entry) {

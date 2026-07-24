@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('gym_name')->nullable();
             $table->tinyInteger('role')->default(0)->comment('0 = Gym Member, 1 = Super Admin, 2 = Gym Owner, 3 = Staff, 4 = Trainer, 5 = Member');
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('otp', 6)->nullable();
+            $table->timestamp('otp_expires_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
