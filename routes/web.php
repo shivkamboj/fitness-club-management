@@ -32,6 +32,7 @@ use App\Http\Controllers\GymOwner\{
 |--------------------------------------------------------------------------
 */
 Route::match(['GET', 'POST'], '/', [HomeController::class, 'home'])->name('home');
+Route::get('/website-builder', [HomeController::class, 'websiteBuilder'])->name('website-builder');
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
 Route::get('/login',    [AuthController::class, 'loginForm'])->name('login');

@@ -291,6 +291,21 @@ h1, h2, h3, h4, .display-font {
   overflow: hidden;
 }
 
+.gym_manager.hero {
+  position: relative;
+  padding: 9rem 0 6rem;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(10, 10, 14, 0.80) 0%,   /* Left: 80% dark */
+      rgba(10, 10, 14, 0.75) 30%,
+      rgba(10, 10, 14, 0.45) 60%,
+      rgba(10, 10, 14, 0.30) 100%  /* Right: 70% visible */
+    ),
+    url("../images/gym_management_hero_4.png") center/cover no-repeat;
+  overflow: hidden;
+}
+
 .hero::before {
   content: '';
   position: absolute;
@@ -866,6 +881,19 @@ h1, h2, h3, h4, .display-font {
       transparent 75%
     ),
     url("../images/hero.avif") right center/cover no-repeat;
+}
+
+[data-theme="light"] .gym_manager.hero {
+  background:
+    linear-gradient(
+      90deg,
+      rgba(248, 250, 252, 0.92) 0%,
+      rgba(248, 250, 252, 0.85) 30%,
+      rgba(248,250,252,0.85) 55%,
+      rgba(248,250,252,0.15) 65%,
+      transparent 75%
+    ),
+    url("../images/gym_management_hero_4.png") right center/cover no-repeat;
 }
 
 [data-theme="light"] .hero-badge {

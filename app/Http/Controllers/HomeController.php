@@ -12,6 +12,11 @@ class HomeController extends Controller
             dd('koko');
         }
 
+        return view('gym-management');
+    }
+
+    public function websiteBuilder()
+    {
         return view('landing');
     }
 }
