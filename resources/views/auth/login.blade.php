@@ -133,10 +133,14 @@
 
                 <div class="row g-2">
                     <div class="col-6">
-                        <a href="#" class="btn-social"><i class="fa-brands fa-google"></i> Google</a>
+                        <a href="{{ route('social.redirect', ['provider' => 'google']) }}" class="btn-social">
+                            <i class="fa-brands fa-google"></i> Google
+                        </a>
                     </div>
                     <div class="col-6">
-                        <a href="#" class="btn-social"><i class="fa-brands fa-facebook-f"></i> Facebook</a>
+                        <a href="{{ route('social.redirect', ['provider' => 'facebook']) }}" class="btn-social">
+                            <i class="fa-brands fa-facebook-f"></i> Facebook
+                        </a>
                     </div>
                 </div>
 

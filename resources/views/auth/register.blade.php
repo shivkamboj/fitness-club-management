@@ -201,17 +201,6 @@
                     </button>
                 </form>
 
-                <div class="auth-divider">or sign up with</div>
-
-                <div class="row g-2">
-                    <div class="col-6">
-                        <a href="#" class="btn-social"><i class="fa-brands fa-google"></i> Google</a>
-                    </div>
-                    <div class="col-6">
-                        <a href="#" class="btn-social"><i class="fa-brands fa-facebook-f"></i> Facebook</a>
-                    </div>
-                </div>
-
                 <p class="auth-footer-note">
                     Already have an account?
                     <a href="{{ route('login') }}">Log in</a>

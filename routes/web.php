@@ -11,8 +11,10 @@ use App\Http\Controllers\{
     TrainerController,
     PaymentController,
     ReportController,
-    SettingController
+    SettingController,
+    SocialAuthController
 };
+use App\Services\SocialAuthService;
 use App\Http\Controllers\SuperAdmin\{
     SuperAdminController,
     GymManagementController,
@@ -51,6 +53,15 @@ Route::get('/reset-password',   [AuthController::class, 'resetPasswordForm'])->n
 Route::post('/reset-password',  [AuthController::class, 'resetPassword'])->name('password.update');
 
 Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
+
+// ── Social Login (authentication only — never creates users) ─────────────────
+Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])
+    ->whereIn('provider', SocialAuthService::SUPPORTED_PROVIDERS)
+    ->name('social.redirect');
+
+Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])
+    ->whereIn('provider', SocialAuthService::SUPPORTED_PROVIDERS)
+    ->name('social.callback');
 
 // ── Contact ──────────────────────────────────────────────────────────────────
 Route::match(['GET', 'POST'], '/contact-us', [AuthController::class, 'contact'])->name('contact.store');
