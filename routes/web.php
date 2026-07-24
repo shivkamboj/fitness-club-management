@@ -27,6 +27,7 @@ use App\Http\Controllers\GymOwner\{
     WorkoutPlanController,
     DietPlanController
 };
+use App\Http\Controllers\Trainer\TrainerDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,10 +77,20 @@ Route::middleware('auth')->group(function () {
     // Smart Dashboard Redirect according to Role
     Route::get('/dashboard', function () {
         $user = Auth::user();
+
         if ($user && method_exists($user, 'isSuperAdmin') && $user->isSuperAdmin()) {
             return redirect()->route('super-admin.dashboard');
         }
-        return redirect()->route('gym-owner.dashboard');
+
+        if ($user && method_exists($user, 'isTrainer') && $user->isTrainer()) {
+            return redirect()->route('trainer.dashboard');
+        }
+
+        if ($user && method_exists($user, 'isGymOwner') && $user->isGymOwner()) {
+            return redirect()->route('gym-owner.dashboard');
+        }
+
+        return redirect()->route('login')->with('error', 'Access Denied.');
     })->name('dashboard');
 
     // ── SUPER ADMIN FLOW (Protected by role:super-admin) ──────────────────────
@@ -95,7 +106,15 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:gym-owner')->prefix('gym-owner')->name('gym-owner.')->group(function () {
         Route::get('/dashboard', [GymOwnerDashboardController::class, 'index'])->name('dashboard');
         Route::get('/members', [MemberController::class, 'index'])->name('members.index');
+
         Route::get('/trainers', [TrainerController::class, 'index'])->name('trainers.index');
+        Route::post('/trainers', [TrainerController::class, 'store'])->name('trainers.store');
+        Route::get('/trainers/generate-password', [TrainerController::class, 'generatePassword'])->name('trainers.generate-password');
+        Route::get('/trainers/{trainer}', [TrainerController::class, 'show'])->name('trainers.show');
+        Route::match(['put', 'post'], '/trainers/{trainer}', [TrainerController::class, 'update'])->name('trainers.update');
+        Route::delete('/trainers/{trainer}', [TrainerController::class, 'destroy'])->name('trainers.destroy');
+        Route::patch('/trainers/{trainer}/status', [TrainerController::class, 'updateStatus'])->name('trainers.status');
+
         Route::get('/workout-plans', [WorkoutPlanController::class, 'index'])->name('workout-plans.index');
         Route::get('/diet-plans', [DietPlanController::class, 'index'])->name('diet-plans.index');
         Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
@@ -103,6 +122,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
         Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+    });
+
+    // ── TRAINER FLOW (Protected by role:trainer) ─────────────────────────────
+    Route::middleware('role:trainer')->prefix('trainer')->name('trainer.')->group(function () {
+        Route::get('/dashboard', [TrainerDashboardController::class, 'index'])->name('dashboard');
     });
 
 });

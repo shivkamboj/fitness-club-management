@@ -36,6 +36,10 @@
     @php
         $authUser = Auth::user();
         $isSuperAdmin = $authUser && method_exists($authUser, 'isSuperAdmin') ? $authUser->isSuperAdmin() : request()->is('super-admin*');
+        $isTrainer = $authUser && method_exists($authUser, 'isTrainer') ? $authUser->isTrainer() : request()->is('trainer*');
+        $dashboardHome = $isSuperAdmin
+            ? route('super-admin.dashboard')
+            : ($isTrainer ? route('trainer.dashboard') : route('gym-owner.dashboard'));
     @endphp
 
     <div class="app-wrapper" id="appWrapper">
@@ -45,7 +49,7 @@
         <!-- App Sidebar -->
         <aside class="app-sidebar" id="appSidebar">
             <div class="sidebar-header">
-                <a href="{{ $isSuperAdmin ? route('super-admin.dashboard') : route('gym-owner.dashboard') }}" class="sidebar-brand">
+                <a href="{{ $dashboardHome }}" class="sidebar-brand">
                     <div class="brand-icon">
                         <i class="fa-solid fa-dumbbell"></i>
                     </div>
@@ -85,6 +89,13 @@
                     <a href="{{ route('super-admin.contacts.index') }}" class="nav-link-item {{ request()->routeIs('super-admin.contacts*') ? 'active' : '' }}">
                         <i class="fa-solid fa-headset nav-icon"></i>
                         <span class="nav-text">Contact Requests / Leads</span>
+                    </a>
+                @elseif($isTrainer)
+                    <div class="menu-category">Trainer Panel</div>
+
+                    <a href="{{ route('trainer.dashboard') }}" class="nav-link-item {{ request()->routeIs('trainer.dashboard') ? 'active' : '' }}">
+                        <i class="fa-solid fa-chart-line nav-icon"></i>
+                        <span class="nav-text">Dashboard</span>
                     </a>
                 @else
                     <!-- GYM OWNER SIDEBAR (Role = 2, Gym Subscriber) -->
@@ -150,8 +161,8 @@
                         {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
                     </div>
                     <div class="user-info">
-                        <div class="user-name">{{ Auth::user()->name ?? ($isSuperAdmin ? 'Super Administrator' : 'Gym Owner') }}</div>
-                        <div class="user-role">{{ $authUser->role_name ?? ($isSuperAdmin ? 'Super Admin' : 'Gym Owner') }}</div>
+                        <div class="user-name">{{ Auth::user()->name ?? ($isSuperAdmin ? 'Super Administrator' : ($isTrainer ? 'Trainer' : 'Gym Owner')) }}</div>
+                        <div class="user-role">{{ $authUser->role_name ?? ($isSuperAdmin ? 'Super Admin' : ($isTrainer ? 'Trainer' : 'Gym Owner')) }}</div>
                     </div>
                 </div>
             </div>
@@ -172,8 +183,16 @@
 
                 <div class="topbar-right">
                     <div class="topbar-badge d-none d-md-flex">
-                        <i class="fa-solid {{ $isSuperAdmin ? 'fa-shield-halved text-orange' : 'fa-building text-orange' }}"></i>
-                        <span>{{ $isSuperAdmin ? 'Platform Super Admin Console' : (Auth::user()->gym_name ?? 'My Fitness Gym') }}</span>
+                        <i class="fa-solid {{ $isSuperAdmin ? 'fa-shield-halved text-orange' : ($isTrainer ? 'fa-user-ninja text-orange' : 'fa-building text-orange') }}"></i>
+                        <span>
+                            @if($isSuperAdmin)
+                                Platform Super Admin Console
+                            @elseif($isTrainer)
+                                Trainer Workspace
+                            @else
+                                {{ Auth::user()->gym_name ?? 'My Fitness Gym' }}
+                            @endif
+                        </span>
                     </div>
 
                     <!-- Theme Switcher Button -->
@@ -190,8 +209,9 @@
                         </button>
                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
                             <li>
-                                <a class="dropdown-item" href="{{ $isSuperAdmin ? route('super-admin.dashboard') : route('gym-owner.settings.index') }}">
-                                    <i class="fa-solid fa-gear me-2"></i> {{ $isSuperAdmin ? 'Platform Settings' : 'Gym Settings' }}
+                                <a class="dropdown-item" href="{{ $isSuperAdmin ? route('super-admin.dashboard') : ($isTrainer ? route('trainer.dashboard') : route('gym-owner.settings.index')) }}">
+                                    <i class="fa-solid fa-gear me-2"></i>
+                                    {{ $isSuperAdmin ? 'Platform Settings' : ($isTrainer ? 'My Dashboard' : 'Gym Settings') }}
                                 </a>
                             </li>
                             <li>

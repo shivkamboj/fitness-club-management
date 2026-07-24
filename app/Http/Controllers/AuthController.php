@@ -78,9 +78,16 @@ class AuthController extends Controller
             return $this->jsonError('Invalid email or password. Please try again.', [], 401);
         }
 
-        if (!$user->hasVerifiedEmail()) {
+        if (! $user->isActive()) {
+            return $this->jsonError(
+                'Your account has been disabled. Please contact your Gym Owner.',
+                [],
+                403
+            );
+        }
 
-            $otp = $user->generateOtp();
+        if (! $user->hasVerifiedEmail()) {
+            $user->generateOtp();
 
             return response()->json([
                 'success' => false,
@@ -92,7 +99,24 @@ class AuthController extends Controller
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
-        return $this->jsonSuccess('Welcome back! Redirecting…', route('dashboard'));
+        return $this->jsonSuccess('Welcome back! Redirecting…', $this->dashboardRouteFor($user));
+    }
+
+    private function dashboardRouteFor(User $user): string
+    {
+        if ($user->isSuperAdmin()) {
+            return route('super-admin.dashboard');
+        }
+
+        if ($user->isTrainer()) {
+            return route('trainer.dashboard');
+        }
+
+        if ($user->isGymOwner()) {
+            return route('gym-owner.dashboard');
+        }
+
+        return route('dashboard');
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -131,6 +155,7 @@ class AuthController extends Controller
                 'email' => $validated['email'],
                 'phone' => $validated['phone'],
                 'role' => User::ROLE_GYM_OWNER,
+                'status' => User::STATUS_ACTIVE,
                 'password' => $validated['password'],
             ]);
 

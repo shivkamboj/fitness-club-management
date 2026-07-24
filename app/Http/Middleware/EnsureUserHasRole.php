@@ -39,6 +39,22 @@ class EnsureUserHasRole
             }
         }
 
+        // Trainer Check (role must be 4)
+        if ($role === 'trainer') {
+            if ($userRole !== User::ROLE_TRAINER) {
+                return redirect()->route('login')->with('error', 'Access Denied: Trainer privileges required.');
+            }
+
+            if (! $user->isActive()) {
+                Auth::logout();
+
+                return redirect()->route('login')->with(
+                    'error',
+                    'Your account has been disabled. Please contact your Gym Owner.'
+                );
+            }
+        }
+
         return $next($request);
     }
 }

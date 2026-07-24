@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -11,13 +13,21 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     public const ROLE_MEMBER = 0;
+
     public const ROLE_SUPER_ADMIN = 1;
+
     public const ROLE_GYM_OWNER = 2;
+
     public const ROLE_STAFF = 3;
+
     public const ROLE_TRAINER = 4;
+
+    public const STATUS_ACTIVE = 'active';
+
+    public const STATUS_INACTIVE = 'inactive';
 
     public const OTP_EXPIRY_MINUTES = 10;
 
@@ -30,11 +40,24 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
         'phone',
         'gym_name',
         'role',
+        'gym_owner_id',
+        'gender',
+        'dob',
+        'joining_date',
+        'specialization',
+        'experience',
+        'certifications',
+        'skills',
+        'profile_image',
+        'background_image',
+        'status',
         'otp',
         'otp_expires_at',
         'email_verified_at',
@@ -63,7 +86,20 @@ class User extends Authenticatable
             'otp_expires_at' => 'datetime',
             'password' => 'hashed',
             'role' => 'integer',
+            'dob' => 'date',
+            'joining_date' => 'date',
+            'experience' => 'integer',
         ];
+    }
+
+    public function trainers(): HasMany
+    {
+        return $this->hasMany(Trainer::class, 'gym_owner_id');
+    }
+
+    public function gymOwner()
+    {
+        return $this->belongsTo(self::class, 'gym_owner_id');
     }
 
     public function isSuperAdmin(): bool
@@ -76,6 +112,16 @@ class User extends Authenticatable
         return (int) $this->role === self::ROLE_GYM_OWNER || (int) $this->role === self::ROLE_SUPER_ADMIN;
     }
 
+    public function isTrainer(): bool
+    {
+        return (int) $this->role === self::ROLE_TRAINER;
+    }
+
+    public function isActive(): bool
+    {
+        return ($this->status ?? self::STATUS_ACTIVE) === self::STATUS_ACTIVE;
+    }
+
     public function getRoleNameAttribute(): string
     {
         return match ((int) $this->role) {
@@ -85,6 +131,13 @@ class User extends Authenticatable
             self::ROLE_TRAINER => 'Trainer',
             default => 'Gym Member',
         };
+    }
+
+    public function getFullNameAttribute(): string
+    {
+        $full = trim(($this->first_name ?? '').' '.($this->last_name ?? ''));
+
+        return $full !== '' ? $full : (string) $this->name;
     }
 
     public function hasVerifiedEmail(): bool

@@ -16,7 +16,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $owner = User::firstOrCreate(
+            ['email' => 'owner@example.com'],
+            [
+                'name' => 'Gym Owner',
+                'phone' => '9999999992',
+                'gym_name' => 'Power Gym',
+                'role' => 2,
+                'status' => User::STATUS_ACTIVE,
+                'email_verified_at' => now(),
+                'password' => Hash::make('General123..'),
+            ]
+        );
 
         User::firstOrCreate(
             ['email' => 'gymmember@example.com'],
@@ -25,6 +36,7 @@ class DatabaseSeeder extends Seeder
                 'phone' => '9999999990',
                 'gym_name' => null,
                 'role' => 0,
+                'status' => User::STATUS_ACTIVE,
                 'email_verified_at' => now(),
                 'password' => Hash::make('General123..'),
             ]
@@ -37,18 +49,7 @@ class DatabaseSeeder extends Seeder
                 'phone' => '9999999991',
                 'gym_name' => 'System',
                 'role' => 1,
-                'email_verified_at' => now(),
-                'password' => Hash::make('General123..'),
-            ]
-        );
-
-        User::firstOrCreate(
-            ['email' => 'owner@example.com'],
-            [
-                'name' => 'Gym Owner',
-                'phone' => '9999999992',
-                'gym_name' => 'Power Gym',
-                'role' => 2,
+                'status' => User::STATUS_ACTIVE,
                 'email_verified_at' => now(),
                 'password' => Hash::make('General123..'),
             ]
@@ -61,6 +62,7 @@ class DatabaseSeeder extends Seeder
                 'phone' => '9999999993',
                 'gym_name' => 'Power Gym',
                 'role' => 3,
+                'status' => User::STATUS_ACTIVE,
                 'email_verified_at' => now(),
                 'password' => Hash::make('General123..'),
             ]
@@ -69,10 +71,16 @@ class DatabaseSeeder extends Seeder
         User::firstOrCreate(
             ['email' => 'trainer@example.com'],
             [
-                'name' => 'Trainer',
+                'name' => 'Alex Trainer',
+                'first_name' => 'Alex',
+                'last_name' => 'Trainer',
                 'phone' => '9999999994',
                 'gym_name' => 'Power Gym',
-                'role' => 4,
+                'role' => User::ROLE_TRAINER,
+                'gym_owner_id' => $owner->id,
+                'specialization' => 'Strength & Conditioning',
+                'experience' => 5,
+                'status' => User::STATUS_ACTIVE,
                 'email_verified_at' => now(),
                 'password' => Hash::make('General123..'),
             ]
@@ -85,6 +93,7 @@ class DatabaseSeeder extends Seeder
                 'phone' => '9999999995',
                 'gym_name' => 'Power Gym',
                 'role' => 5,
+                'status' => User::STATUS_ACTIVE,
                 'email_verified_at' => now(),
                 'password' => Hash::make('General123..'),
             ]
