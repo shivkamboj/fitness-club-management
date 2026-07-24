@@ -279,31 +279,38 @@ h1, h2, h3, h4, .display-font {
 .hero {
   position: relative;
   padding: 9rem 0 6rem;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(10, 10, 14, 0.80) 0%,   /* Left: 80% dark */
-      rgba(10, 10, 14, 0.75) 30%,
-      rgba(10, 10, 14, 0.45) 60%,
-      rgba(10, 10, 14, 0.30) 100%  /* Right: 70% visible */
-    ),
-    url("../images/hero.avif") center/cover no-repeat;
+  background: #0a0a0e;
   overflow: hidden;
 }
 
-.gym_manager.hero {
+.hero .hero-video-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero .hero-video-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgba(10, 10, 14, 0.80) 0%,
+    rgba(10, 10, 14, 0.75) 30%,
+    rgba(10, 10, 14, 0.45) 60%,
+    rgba(10, 10, 14, 0.30) 100%
+  );
+}
+
+.hero .container-gwb {
   position: relative;
-  padding: 9rem 0 6rem;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(10, 10, 14, 0.80) 0%,   /* Left: 80% dark */
-      rgba(10, 10, 14, 0.75) 30%,
-      rgba(10, 10, 14, 0.45) 60%,
-      rgba(10, 10, 14, 0.30) 100%  /* Right: 70% visible */
-    ),
-    url("../images/gym_management_hero_4.png") center/cover no-repeat;
-  overflow: hidden;
+  z-index: 2;
 }
 
 .hero::before {
@@ -871,29 +878,18 @@ h1, h2, h3, h4, .display-font {
 } */
 
 [data-theme="light"] .hero {
-  background:
-    linear-gradient(
-      90deg,
-      rgba(248, 250, 252, 0.92) 0%,
-      rgba(248, 250, 252, 0.85) 30%,
-      rgba(248,250,252,0.85) 55%,
-      rgba(248,250,252,0.15) 65%,
-      transparent 75%
-    ),
-    url("../images/hero.avif") right center/cover no-repeat;
+  background: #f8fafc;
 }
 
-[data-theme="light"] .gym_manager.hero {
-  background:
-    linear-gradient(
-      90deg,
-      rgba(248, 250, 252, 0.92) 0%,
-      rgba(248, 250, 252, 0.85) 30%,
-      rgba(248,250,252,0.85) 55%,
-      rgba(248,250,252,0.15) 65%,
-      transparent 75%
-    ),
-    url("../images/gym_management_hero_4.png") right center/cover no-repeat;
+[data-theme="light"] .hero .hero-video-overlay {
+  background: linear-gradient(
+    90deg,
+    rgba(248, 250, 252, 0.92) 0%,
+    rgba(248, 250, 252, 0.85) 30%,
+    rgba(248, 250, 252, 0.85) 55%,
+    rgba(248, 250, 252, 0.15) 65%,
+    transparent 75%
+  );
 }
 
 [data-theme="light"] .hero-badge {

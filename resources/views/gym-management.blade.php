@@ -67,6 +67,10 @@
     </header> --}}
 
     <header class="gym_manager hero" id="hero">
+        <video class="hero-video-bg" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+            <source src="{{ asset('videos/gym_management_system_animation.mp4') }}" type="video/mp4">
+        </video>
+        <div class="hero-video-overlay" aria-hidden="true"></div>
         <div class="container-gwb">
             <div class="row align-items-center">
                 <div class="col-lg-8" data-aos="fade-up">
