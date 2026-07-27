@@ -97,6 +97,21 @@
                         <i class="fa-solid fa-chart-line nav-icon"></i>
                         <span class="nav-text">Dashboard</span>
                     </a>
+
+                    <a href="{{ route('gym-owner.workout-plans.index') }}" class="nav-link-item {{ request()->routeIs('gym-owner.workout-plans*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-dumbbell nav-icon"></i>
+                        <span class="nav-text">Workout Plans</span>
+                    </a>
+
+                    <a href="{{ route('gym-owner.diet-plans.index') }}" class="nav-link-item {{ request()->routeIs('gym-owner.diet-plans*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-apple-whole nav-icon"></i>
+                        <span class="nav-text">Diet Plans</span>
+                    </a>
+
+                    <a href="{{ route('gym-owner.members.index') }}" class="nav-link-item {{ request()->routeIs('gym-owner.members*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-users nav-icon"></i>
+                        <span class="nav-text">Members</span>
+                    </a>
                 @else
                     <!-- GYM OWNER SIDEBAR (Role = 2, Gym Subscriber) -->
                     <div class="menu-category">Gym Management</div>

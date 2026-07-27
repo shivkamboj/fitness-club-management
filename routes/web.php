@@ -25,7 +25,8 @@ use App\Http\Controllers\SuperAdmin\{
 use App\Http\Controllers\GymOwner\{
     GymOwnerDashboardController,
     WorkoutPlanController,
-    DietPlanController
+    DietPlanController,
+    GroupClassController
 };
 use App\Http\Controllers\Trainer\TrainerDashboardController;
 
@@ -134,7 +135,19 @@ Route::middleware('auth')->group(function () {
         Route::put('/diet-plans/{dietPlan}', [DietPlanController::class, 'update'])->name('diet-plans.update');
         Route::delete('/diet-plans/{dietPlan}', [DietPlanController::class, 'destroy'])->name('diet-plans.destroy');
         Route::post('/diet-plans/{dietPlan}/assign', [DietPlanController::class, 'assign'])->name('diet-plans.assign');
-        Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
+
+        // Group Classes & Schedules
+        Route::get('/classes', [GroupClassController::class, 'index'])->name('classes.index');
+        Route::get('/classes/create', [GroupClassController::class, 'create'])->name('classes.create');
+        Route::post('/classes', [GroupClassController::class, 'store'])->name('classes.store');
+        Route::get('/classes/{class}/edit', [GroupClassController::class, 'edit'])->name('classes.edit');
+        Route::put('/classes/{class}', [GroupClassController::class, 'update'])->name('classes.update');
+        Route::delete('/classes/{class}', [GroupClassController::class, 'destroy'])->name('classes.destroy');
+        Route::get('/classes/{class}/roster', [GroupClassController::class, 'roster'])->name('classes.roster');
+        Route::post('/classes/{class}/roster/add', [GroupClassController::class, 'addMember'])->name('classes.roster.add');
+        Route::delete('/classes/bookings/{booking}', [GroupClassController::class, 'removeMember'])->name('classes.roster.remove');
+        Route::patch('/classes/bookings/{booking}/status', [GroupClassController::class, 'updateBookingStatus'])->name('classes.booking.status');
+
         Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
         Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');

@@ -25,7 +25,7 @@
             <div class="fw-bold fs-2 text-orange mb-3">₹2,499 <span class="fs-6 text-muted font-body fw-normal">/ month</span></div>
             <p class="text-muted small">Full gym access, locker facilities, and 2 group classes per week.</p>
             <hr class="border-secondary opacity-25">
-            <ul class="list-unstyled text-light small d-flex flex-column gap-2 mb-4">
+            <ul class="list-unstyled  small d-flex flex-column gap-2 mb-4">
                 <li><i class="fa-solid fa-check text-orange me-2"></i> 24/7 Gym Floor Access</li>
                 <li><i class="fa-solid fa-check text-orange me-2"></i> Free Locker Room & Steam</li>
                 <li><i class="fa-solid fa-check text-orange me-2"></i> 2 Group Classes Included</li>
@@ -44,7 +44,7 @@
             <div class="fw-bold fs-2 text-orange mb-3">₹6,999 <span class="fs-6 text-muted font-body fw-normal">/ 3 months</span></div>
             <p class="text-muted small">Designed for serious fitness enthusiasts with unlimited group sessions.</p>
             <hr class="border-secondary opacity-25">
-            <ul class="list-unstyled text-light small d-flex flex-column gap-2 mb-4">
+            <ul class="list-unstyled  small d-flex flex-column gap-2 mb-4">
                 <li><i class="fa-solid fa-check text-orange me-2"></i> 24/7 Gym Floor Access</li>
                 <li><i class="fa-solid fa-check text-orange me-2"></i> Unlimited Group Classes</li>
                 <li><i class="fa-solid fa-check text-orange me-2"></i> 1 Personal Trainer Session</li>
@@ -63,7 +63,7 @@
             <div class="fw-bold fs-2 text-orange mb-3">₹19,999 <span class="fs-6 text-muted font-body fw-normal">/ year</span></div>
             <p class="text-muted small">All-inclusive VIP membership with dedicated personal trainer support.</p>
             <hr class="border-secondary opacity-25">
-            <ul class="list-unstyled text-light small d-flex flex-column gap-2 mb-4">
+            <ul class="list-unstyled  small d-flex flex-column gap-2 mb-4">
                 <li><i class="fa-solid fa-check text-orange me-2"></i> VIP All-Access 365 Days</li>
                 <li><i class="fa-solid fa-check text-orange me-2"></i> Unlimited Classes & Sauna</li>
                 <li><i class="fa-solid fa-check text-orange me-2"></i> 5 PT Sessions Included</li>

@@ -32,10 +32,20 @@ class EnsureUserHasRole
             }
         }
 
-        // Gym Owner Check (role must be 2 or 1)
+        // Gym Owner Check (role must be 2, 1, or 4 — Trainers can access gym-owner routes)
         if ($role === 'gym-owner') {
-            if ($userRole !== User::ROLE_GYM_OWNER && $userRole !== User::ROLE_SUPER_ADMIN) {
+            if ($userRole !== User::ROLE_GYM_OWNER && $userRole !== User::ROLE_SUPER_ADMIN && $userRole !== User::ROLE_TRAINER) {
                 return redirect()->route('login')->with('error', 'Access Denied: Gym Owner privileges required.');
+            }
+
+            // Trainers must be active
+            if ($userRole === User::ROLE_TRAINER && ! $user->isActive()) {
+                Auth::logout();
+
+                return redirect()->route('login')->with(
+                    'error',
+                    'Your account has been disabled. Please contact your Gym Owner.'
+                );
             }
         }
 
