@@ -128,6 +128,12 @@ Route::middleware('auth')->group(function () {
         Route::post('/workout-plans/{workoutPlan}/assign', [WorkoutPlanController::class, 'assign'])->name('workout-plans.assign');
 
         Route::get('/diet-plans', [DietPlanController::class, 'index'])->name('diet-plans.index');
+        Route::get('/diet-plans/create', [DietPlanController::class, 'create'])->name('diet-plans.create');
+        Route::post('/diet-plans', [DietPlanController::class, 'store'])->name('diet-plans.store');
+        Route::get('/diet-plans/{dietPlan}/edit', [DietPlanController::class, 'edit'])->name('diet-plans.edit');
+        Route::put('/diet-plans/{dietPlan}', [DietPlanController::class, 'update'])->name('diet-plans.update');
+        Route::delete('/diet-plans/{dietPlan}', [DietPlanController::class, 'destroy'])->name('diet-plans.destroy');
+        Route::post('/diet-plans/{dietPlan}/assign', [DietPlanController::class, 'assign'])->name('diet-plans.assign');
         Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
         Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
         Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
