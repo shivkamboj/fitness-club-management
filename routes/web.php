@@ -26,7 +26,8 @@ use App\Http\Controllers\GymOwner\{
     GymOwnerDashboardController,
     WorkoutPlanController,
     DietPlanController,
-    GroupClassController
+    GroupClassController,
+    GymSettingController
 };
 use App\Http\Controllers\Trainer\TrainerDashboardController;
 
@@ -151,7 +152,20 @@ Route::middleware('auth')->group(function () {
         Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
         Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-        Route::get('/settings', [SettingController::class, 'index'])->name('settings.index');
+        // Gym Settings
+        Route::get('/settings', [GymSettingController::class, 'index'])->name('settings.index');
+        Route::post('/settings/profile', [GymSettingController::class, 'updateProfile'])->name('settings.profile');
+        Route::post('/settings/logo', [GymSettingController::class, 'updateLogo'])->name('settings.logo');
+        Route::delete('/settings/logo', [GymSettingController::class, 'removeLogo'])->name('settings.logo.remove');
+        Route::post('/settings/taxes', [GymSettingController::class, 'updateTaxes'])->name('settings.taxes');
+        Route::post('/settings/currency', [GymSettingController::class, 'updateCurrency'])->name('settings.currency');
+        Route::post('/settings/hours', [GymSettingController::class, 'updateWorkingHours'])->name('settings.hours');
+        Route::post('/settings/branches', [GymSettingController::class, 'storeBranch'])->name('settings.branches.store');
+        Route::put('/settings/branches/{branch}', [GymSettingController::class, 'updateBranch'])->name('settings.branches.update');
+        Route::delete('/settings/branches/{branch}', [GymSettingController::class, 'destroyBranch'])->name('settings.branches.destroy');
+        Route::post('/settings/sms', [GymSettingController::class, 'updateSms'])->name('settings.sms');
+        Route::post('/settings/whatsapp', [GymSettingController::class, 'updateWhatsapp'])->name('settings.whatsapp');
+        Route::get('/settings/backup', [GymSettingController::class, 'downloadBackup'])->name('settings.backup');
     });
 
     // ── TRAINER FLOW (Protected by role:trainer) ─────────────────────────────
