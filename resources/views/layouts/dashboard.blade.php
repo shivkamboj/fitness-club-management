@@ -108,9 +108,9 @@
                         <span class="nav-text">Diet Plans</span>
                     </a>
 
-                    <a href="{{ route('gym-owner.members.index') }}" class="nav-link-item {{ request()->routeIs('gym-owner.members*') ? 'active' : '' }}">
-                        <i class="fa-solid fa-users nav-icon"></i>
-                        <span class="nav-text">Members</span>
+                    <a href="{{ route('gym-owner.leads.index') }}" class="nav-link-item {{ request()->routeIs('gym-owner.leads*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-headset nav-icon"></i>
+                        <span class="nav-text">Leads & Enquiries</span>
                     </a>
                 @else
                     <!-- GYM OWNER SIDEBAR (Role = 2, Gym Subscriber) -->
@@ -119,6 +119,11 @@
                     <a href="{{ route('gym-owner.dashboard') }}" class="nav-link-item {{ request()->routeIs('gym-owner.dashboard') ? 'active' : '' }}">
                         <i class="fa-solid fa-chart-line nav-icon"></i>
                         <span class="nav-text">Gym Dashboard</span>
+                    </a>
+
+                    <a href="{{ route('gym-owner.leads.index') }}" class="nav-link-item {{ request()->routeIs('gym-owner.leads*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-headset nav-icon"></i>
+                        <span class="nav-text">Leads & Enquiries</span>
                     </a>
 
                     <a href="{{ route('gym-owner.members.index') }}" class="nav-link-item {{ request()->routeIs('gym-owner.members*') ? 'active' : '' }}">
@@ -144,6 +149,11 @@
                     <a href="{{ route('gym-owner.classes.index') }}" class="nav-link-item {{ request()->routeIs('gym-owner.classes*') ? 'active' : '' }}">
                         <i class="fa-solid fa-calendar-days nav-icon"></i>
                         <span class="nav-text">Classes & Schedules</span>
+                    </a>
+
+                    <a href="{{ route('gym-owner.notifications.whatsapp') }}" class="nav-link-item {{ request()->routeIs('gym-owner.notifications.whatsapp*') ? 'active' : '' }}">
+                        <i class="fa-brands fa-whatsapp nav-icon" style="color:#25d366;"></i>
+                        <span class="nav-text">WhatsApp Events</span>
                     </a>
 
                     <div class="menu-category">Gym Finance & Billing</div>

@@ -27,7 +27,9 @@ use App\Http\Controllers\GymOwner\{
     WorkoutPlanController,
     DietPlanController,
     GroupClassController,
-    GymSettingController
+    GymSettingController,
+    LeadController,
+    WhatsAppNotificationController
 };
 use App\Http\Controllers\Trainer\TrainerDashboardController;
 
@@ -152,6 +154,18 @@ Route::middleware('auth')->group(function () {
         Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
         Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+        // Leads & Enquiries
+        Route::get('/leads', [LeadController::class, 'index'])->name('leads.index');
+        Route::post('/leads', [LeadController::class, 'store'])->name('leads.store');
+        Route::put('/leads/{lead}', [LeadController::class, 'update'])->name('leads.update');
+        Route::patch('/leads/{lead}/status', [LeadController::class, 'updateStatus'])->name('leads.status');
+        Route::delete('/leads/{lead}', [LeadController::class, 'destroy'])->name('leads.destroy');
+
+        // WhatsApp Notifications & Events
+        Route::get('/notifications/whatsapp', [WhatsAppNotificationController::class, 'index'])->name('notifications.whatsapp');
+        Route::post('/notifications/whatsapp/templates', [WhatsAppNotificationController::class, 'updateTemplates'])->name('notifications.whatsapp.templates');
+        Route::post('/notifications/whatsapp/generate', [WhatsAppNotificationController::class, 'generateMessage'])->name('notifications.whatsapp.generate');
+
         // Gym Settings
         Route::get('/settings', [GymSettingController::class, 'index'])->name('settings.index');
         Route::post('/settings/profile', [GymSettingController::class, 'updateProfile'])->name('settings.profile');
