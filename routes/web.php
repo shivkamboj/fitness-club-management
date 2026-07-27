@@ -90,6 +90,10 @@ Route::middleware('auth')->group(function () {
             return redirect()->route('gym-owner.dashboard');
         }
 
+        if ($user && ((int)$user->role === 0 || (int)$user->role === 5)) {
+            return redirect()->route('member.workouts');
+        }
+
         return redirect()->route('login')->with('error', 'Access Denied.');
     })->name('dashboard');
 
@@ -116,6 +120,13 @@ Route::middleware('auth')->group(function () {
         Route::patch('/trainers/{trainer}/status', [TrainerController::class, 'updateStatus'])->name('trainers.status');
 
         Route::get('/workout-plans', [WorkoutPlanController::class, 'index'])->name('workout-plans.index');
+        Route::get('/workout-plans/create', [WorkoutPlanController::class, 'create'])->name('workout-plans.create');
+        Route::post('/workout-plans', [WorkoutPlanController::class, 'store'])->name('workout-plans.store');
+        Route::get('/workout-plans/{workoutPlan}/edit', [WorkoutPlanController::class, 'edit'])->name('workout-plans.edit');
+        Route::put('/workout-plans/{workoutPlan}', [WorkoutPlanController::class, 'update'])->name('workout-plans.update');
+        Route::delete('/workout-plans/{workoutPlan}', [WorkoutPlanController::class, 'destroy'])->name('workout-plans.destroy');
+        Route::post('/workout-plans/{workoutPlan}/assign', [WorkoutPlanController::class, 'assign'])->name('workout-plans.assign');
+
         Route::get('/diet-plans', [DietPlanController::class, 'index'])->name('diet-plans.index');
         Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
         Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
@@ -127,6 +138,12 @@ Route::middleware('auth')->group(function () {
     // ── TRAINER FLOW (Protected by role:trainer) ─────────────────────────────
     Route::middleware('role:trainer')->prefix('trainer')->name('trainer.')->group(function () {
         Route::get('/dashboard', [TrainerDashboardController::class, 'index'])->name('dashboard');
+    });
+
+    // ── MEMBER FLOW ──────────────────────────────────────────────────────────
+    Route::prefix('member')->name('member.')->group(function () {
+        Route::get('/workouts', [WorkoutPlanController::class, 'memberWorkouts'])->name('workouts');
+        Route::post('/workouts/toggle-complete', [WorkoutPlanController::class, 'toggleCompleteExercise'])->name('workouts.toggle-complete');
     });
 
 });

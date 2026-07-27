@@ -102,6 +102,22 @@ class User extends Authenticatable
         return $this->belongsTo(self::class, 'gym_owner_id');
     }
 
+    public function workoutPlans(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(WorkoutPlan::class, 'workout_plan_assignments', 'user_id', 'workout_plan_id')
+            ->withPivot('assigned_by', 'assigned_at', 'status')
+            ->withTimestamps();
+    }
+
+    public function activeWorkoutPlan()
+    {
+        return $this->belongsToMany(WorkoutPlan::class, 'workout_plan_assignments', 'user_id', 'workout_plan_id')
+            ->wherePivot('status', 'active')
+            ->withPivot('assigned_by', 'assigned_at', 'status')
+            ->withTimestamps()
+            ->latest('workout_plan_assignments.created_at');
+    }
+
     public function isSuperAdmin(): bool
     {
         return (int) $this->role === self::ROLE_SUPER_ADMIN;
