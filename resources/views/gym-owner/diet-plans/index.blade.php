@@ -109,21 +109,20 @@
                 <div class="modal-body">
                     <p class="text-muted small mb-3">Select members to assign this diet plan. Unchecking a member will deactivate their assignment.</p>
                     <h6 class="fw-semibold text-orange mb-3" id="modalDietPlanName">Plan Name</h6>
-                    <div style="max-height: 300px; overflow-y: auto;" class="pe-2">
+                    <div style="max-height: 300px; overflow-y: auto;" class="pe-2 gwb-member-assign-list">
                         @forelse($members as $member)
-                            <div class="form-check mb-2 d-flex align-items-center justify-content-between p-2 rounded"
-                                 style="background: var(--gwb-surface-2); border: 1px solid var(--gwb-border);">
-                                <label class="form-check-label text-white d-flex align-items-center gap-2 cursor-pointer w-100"
-                                       for="diet-member-{{ $member->id }}">
-                                    <input class="form-check-input diet-member-checkbox me-2" type="checkbox"
-                                           name="members[]" value="{{ $member->id }}"
-                                           id="diet-member-{{ $member->id }}">
-                                    <div>
-                                        <div class="fw-semibold text-white small">{{ $member->full_name }}</div>
-                                        <div class="text-muted" style="font-size: 0.75rem;">{{ $member->email }}</div>
-                                    </div>
-                                </label>
-                            </div>
+                            <label class="gwb-member-assign-item" for="diet-member-{{ $member->id }}">
+                                <input class="gwb-assign-checkbox diet-member-checkbox" type="checkbox"
+                                       name="members[]" value="{{ $member->id }}"
+                                       id="diet-member-{{ $member->id }}">
+                                <span class="gwb-assign-checkbox-ui" aria-hidden="true">
+                                    <i class="fa-solid fa-check"></i>
+                                </span>
+                                <div class="gwb-member-assign-info">
+                                    <div class="gwb-member-assign-name">{{ $member->full_name }}</div>
+                                    <div class="gwb-member-assign-email">{{ $member->email }}</div>
+                                </div>
+                            </label>
                         @empty
                             <p class="text-center text-muted py-3">No members registered yet.</p>
                         @endforelse
@@ -161,9 +160,16 @@
                 const checkboxes = document.querySelectorAll('.diet-member-checkbox');
                 checkboxes.forEach(cb => {
                     cb.checked = assignedMembers.includes(parseInt(cb.value));
+                    cb.closest('.gwb-member-assign-item')?.classList.toggle('is-selected', cb.checked);
                 });
             });
         }
+
+        document.querySelectorAll('.diet-member-checkbox').forEach(cb => {
+            cb.addEventListener('change', function () {
+                this.closest('.gwb-member-assign-item')?.classList.toggle('is-selected', this.checked);
+            });
+        });
 
         // Delete with SweetAlert2 confirmation
         document.querySelectorAll('.delete-diet-btn').forEach(btn => {

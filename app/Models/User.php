@@ -61,6 +61,8 @@ class User extends Authenticatable
         'otp',
         'otp_expires_at',
         'email_verified_at',
+        'membership_plan_id',
+        'membership_expires_at',
     ];
 
     /**
@@ -89,7 +91,19 @@ class User extends Authenticatable
             'dob' => 'date',
             'joining_date' => 'date',
             'experience' => 'integer',
+            'membership_expires_at' => 'date',
         ];
+    }
+
+    public function membershipPlan(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(MembershipPlan::class, 'membership_plan_id');
+    }
+
+    public function members(): HasMany
+    {
+        return $this->hasMany(self::class, 'gym_owner_id')
+            ->whereIn('role', [self::ROLE_MEMBER, 5]);
     }
 
     public function trainers(): HasMany

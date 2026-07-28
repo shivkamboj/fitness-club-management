@@ -75,6 +75,19 @@ class AuthController extends Controller
         $user = User::where('email', $validated['email'])->first();
 
         if (! $user || ! Hash::check($validated['password'], $user->password)) {
+            // Admin notification: failed login attempt
+            $superAdmins = User::query()->where('role', User::ROLE_SUPER_ADMIN)->get();
+            foreach ($superAdmins as $admin) {
+                $this->sendNotification($admin->id, [
+                    'title' => 'Failed login attempt',
+                    'message' => 'A login attempt failed for email: '.$validated['email'].'.',
+                    'type' => 'error',
+                    'module' => 'Admin',
+                    'reference_id' => null,
+                    'reference_type' => 'auth',
+                ]);
+            }
+
             return $this->jsonError('Invalid email or password. Please try again.', [], 401);
         }
 
@@ -98,6 +111,19 @@ class AuthController extends Controller
 
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
+
+        // Authentication: welcome notification (avoid spamming)
+        if (! $request->session()->has('welcome_notified')) {
+            $request->session()->put('welcome_notified', true);
+            $this->sendNotification($user->id, [
+                'title' => 'Welcome back',
+                'message' => 'Welcome back, '.$user->first_name.'. Your dashboard is ready.',
+                'type' => 'success',
+                'module' => 'Authentication',
+                'reference_id' => $user->id,
+                'reference_type' => 'user',
+            ]);
+        }
 
         return $this->jsonSuccess('Welcome back! Redirecting…', $this->dashboardRouteFor($user));
     }
@@ -158,6 +184,19 @@ class AuthController extends Controller
                 'status' => User::STATUS_ACTIVE,
                 'password' => $validated['password'],
             ]);
+
+            // Admin notification: new registration
+            $superAdmins = User::query()->where('role', User::ROLE_SUPER_ADMIN)->get();
+            foreach ($superAdmins as $admin) {
+                $this->sendNotification($admin->id, [
+                    'title' => 'New registration',
+                    'message' => 'A new gym owner registered: '.$user->name.' ('.$user->email.').',
+                    'type' => 'information',
+                    'module' => 'Admin',
+                    'reference_id' => $user->id,
+                    'reference_type' => 'user',
+                ]);
+            }
 
             $otp = $user->generateOtp();
 
@@ -236,6 +275,16 @@ class AuthController extends Controller
 
         Auth::login($user);
         $request->session()->regenerate();
+
+        // Authentication: email verified + welcome
+        $this->sendNotification($user->id, [
+            'title' => 'Email verified',
+            'message' => 'Thanks for verifying your email. Welcome to '.config('app.name').'!',
+            'type' => 'success',
+            'module' => 'Authentication',
+            'reference_id' => $user->id,
+            'reference_type' => 'user',
+        ]);
 
         return $this->jsonSuccess('Email verified successfully.', route('dashboard'));
     }
@@ -397,6 +446,16 @@ class AuthController extends Controller
         $user->tokens()->delete();
         $request->session()->forget('password_reset_email');
 
+        // Authentication: password reset / password changed
+        $this->sendNotification($user->id, [
+            'title' => 'Password changed',
+            'message' => 'Your password has been updated successfully.',
+            'type' => 'success',
+            'module' => 'Authentication',
+            'reference_id' => $user->id,
+            'reference_type' => 'auth',
+        ]);
+
         return $this->jsonSuccess('Password changed successfully.', route('login'));
     }
 
@@ -428,6 +487,19 @@ class AuthController extends Controller
                 'phone' => ['required', 'string', 'max:30'],
                 'message' => ['nullable', 'string', 'max:2000'],
             ]);
+
+            // Admin notification: new enquiry from contact form
+            $superAdmins = User::query()->where('role', User::ROLE_SUPER_ADMIN)->get();
+            foreach ($superAdmins as $admin) {
+                $this->sendNotification($admin->id, [
+                    'title' => 'Contact form submitted',
+                    'message' => 'New enquiry from '.$validated['name'].' ('.$validated['email'].').',
+                    'type' => 'information',
+                    'module' => 'Admin',
+                    'reference_id' => null,
+                    'reference_type' => 'contact',
+                ]);
+            }
 
             return back()->with('success', 'Thanks! We will get back to you within 24 hours.');
         }

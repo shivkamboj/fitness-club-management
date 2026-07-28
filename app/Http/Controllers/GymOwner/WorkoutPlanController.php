@@ -150,6 +150,13 @@ class WorkoutPlanController extends Controller
             'exercises.*.*.reps.required' => 'Reps is required for all exercises.',
         ]);
 
+        // Recipients before changes (active assigned members)
+        $activeMemberIds = DB::table('workout_plan_assignments')
+            ->where('workout_plan_id', $workoutPlan->id)
+            ->where('status', 'active')
+            ->pluck('user_id')
+            ->toArray();
+
         DB::transaction(function () use ($request, $workoutPlan) {
             $workoutPlan->update([
                 'name' => $request->name,
@@ -177,6 +184,20 @@ class WorkoutPlanController extends Controller
                 }
             }
         });
+
+        if (! empty($activeMemberIds)) {
+            $workoutPlan->refresh();
+            foreach ($activeMemberIds as $memberId) {
+                $this->sendNotification((int) $memberId, [
+                    'title' => 'Workout Plan Updated',
+                    'message' => "Your workout plan '{$workoutPlan->name}' has been updated. Check your member dashboard for your latest routine.",
+                    'type' => 'information',
+                    'module' => 'Workout Plans & Routines',
+                    'reference_id' => $workoutPlan->id,
+                    'reference_type' => 'workout_plan',
+                ]);
+            }
+        }
 
         return redirect()->route('gym-owner.workout-plans.index')
             ->with('success', 'Workout plan updated successfully.');
@@ -219,7 +240,10 @@ class WorkoutPlanController extends Controller
 
         $memberIds = $request->input('members', []);
 
-        DB::transaction(function () use ($workoutPlan, $memberIds, $gymOwnerId) {
+        $toAssign = [];
+        $toDeactivate = [];
+
+        DB::transaction(function () use ($workoutPlan, $memberIds, $gymOwnerId, &$toAssign, &$toDeactivate) {
             // First, find all current active assignments for this workout plan
             // so we can see who needs to be removed/deactivated
             $currentlyAssigned = DB::table('workout_plan_assignments')
@@ -263,6 +287,31 @@ class WorkoutPlanController extends Controller
                 DB::table('workout_plan_assignments')->insert($insertData);
             }
         });
+
+        // In-app notifications:
+        // - Newly assigned members (membership assigned)
+        // - Removed members (membership cancelled)
+        foreach ($toAssign as $memberId) {
+            $this->sendNotification((int) $memberId, [
+                'title' => 'Workout Plan Assigned',
+                'message' => 'You have been assigned a new workout plan: '.$workoutPlan->name.'.',
+                'type' => 'success',
+                'module' => 'Member',
+                'reference_id' => $workoutPlan->id,
+                'reference_type' => 'workout_plan',
+            ]);
+        }
+
+        foreach ($toDeactivate as $memberId) {
+            $this->sendNotification((int) $memberId, [
+                'title' => 'Workout Plan Removed',
+                'message' => 'Your workout plan assignment has been removed. Please contact your gym for your next plan.',
+                'type' => 'warning',
+                'module' => 'Member',
+                'reference_id' => $workoutPlan->id,
+                'reference_type' => 'workout_plan',
+            ]);
+        }
 
         return redirect()->route('gym-owner.workout-plans.index')
             ->with('success', 'Workout plan assignments updated successfully.');

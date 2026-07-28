@@ -612,7 +612,7 @@ body.dashboard-body .display-font {
 
   .mobile-overlay {
     display: none;
-    position.fixed;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -777,4 +777,460 @@ body.dashboard-body .display-font {
   color: var(--gwb-text-muted, #475569) !important;
 }
 
+
+/* ==========================================================================
+   In-App Notifications UI
+   ========================================================================== */
+
+.notifications-bell-btn {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.notifications-bell-btn::after {
+  display: none !important;
+}
+
+.notifications-bell-btn .fa-bell {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.notifications-unread-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--gwb-orange, #ff5a1f);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.68rem;
+  line-height: 1;
+  border: 2px solid var(--gwb-surface, #17171f);
+  box-shadow: 0 2px 8px rgba(255, 90, 31, 0.35);
+  pointer-events: none;
+  z-index: 1;
+}
+
+[data-theme="light"] .notifications-unread-badge {
+  border-color: var(--gwb-surface, #ffffff);
+  color: #ffffff;
+}
+
+.notifications-dropdown {
+  position: static;
+}
+
+.notifications-dropdown-menu {
+  width: min(380px, calc(100vw - 1.5rem));
+  min-width: 280px;
+  max-height: min(520px, calc(100vh - var(--topbar-height) - 1.5rem));
+  overflow: auto;
+}
+
+.notifications-dropdown-loading {
+  animation: gwbFadeIn 0.15s ease-in;
+}
+
+@keyframes gwbFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gwb-notification-item {
+  display: flex;
+  gap: 0.85rem;
+  padding: 0.75rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition: transform 0.12s ease, border-color 0.12s ease, background-color 0.12s ease;
+}
+
+.gwb-notification-item:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 90, 31, 0.22);
+  background: rgba(255, 90, 31, 0.05);
+}
+
+.gwb-notification-item.is-unread {
+  border-color: rgba(255, 90, 31, 0.35);
+  background: rgba(255, 90, 31, 0.07);
+}
+
+.gwb-notification-item.is-read {
+  opacity: 0.98;
+}
+
+.gwb-notification-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  margin-top: 10px;
+  flex-shrink: 0;
+}
+
+.bg-orange {
+  background-color: var(--gwb-orange, #ff5a1f) !important;
+}
+
+.gwb-notification-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.gwb-notification-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.gwb-notification-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 0.35rem;
+}
+
+.gwb-notification-title {
+  flex: 1;
+  min-width: 0;
+  font-weight: 800;
+  color: var(--gwb-text, #f5f3ef);
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gwb-notification-time {
+  flex-shrink: 0;
+  white-space: nowrap;
+  font-size: 0.78rem;
+}
+
+.gwb-notification-message {
+  color: #c4c4d4;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 0.35rem;
+}
+
+.gwb-notification-meta {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.gwb-notification-actions {
+  padding-left: 0.5rem;
+  flex-shrink: 0;
+}
+
+.notifications-dropdown-actions .btn-gwb-secondary {
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.fw-600 {
+  font-weight: 600;
+}
+
+[data-theme="light"] .gwb-notification-item {
+  border-color: var(--gwb-border, #e2e8f0);
+  background: var(--gwb-bg-soft, #f8fafc);
+}
+
+[data-theme="light"] .gwb-notification-item:hover {
+  border-color: rgba(255, 90, 31, 0.25);
+  background: rgba(255, 90, 31, 0.06);
+}
+
+[data-theme="light"] .gwb-notification-item.is-unread {
+  border-color: rgba(255, 90, 31, 0.35);
+  background: rgba(255, 90, 31, 0.08);
+}
+
+[data-theme="light"] .gwb-notification-icon {
+  background: #ffffff;
+  border-color: var(--gwb-border, #e2e8f0);
+}
+
+[data-theme="light"] .gwb-notification-message {
+  color: var(--gwb-text-muted, #475569);
+}
+
+/* Notifications — responsive */
+@media (max-width: 991.98px) {
+  .app-topbar {
+    padding: 0 1rem;
+  }
+
+  .topbar-right {
+    gap: 0.5rem;
+  }
+
+  .notifications-dropdown-menu {
+    width: min(360px, calc(100vw - 1rem));
+    min-width: 0;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .topbar-title-section h1 {
+    font-size: 1rem !important;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .notifications-dropdown-menu {
+    position: fixed !important;
+    top: calc(var(--topbar-height) + 0.5rem) !important;
+    right: 0.75rem !important;
+    left: 0.75rem !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    max-height: calc(100vh - var(--topbar-height) - 1rem) !important;
+    transform: none !important;
+    inset: auto !important;
+  }
+
+  .gwb-notification-item {
+    gap: 0.65rem;
+    padding: 0.65rem 0.75rem;
+  }
+
+  .gwb-notification-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+  }
+
+  .gwb-notification-dot {
+    width: 8px;
+    height: 8px;
+    margin-top: 8px;
+  }
+
+  .gwb-notification-title-row {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.5rem;
+  }
+
+  .gwb-notification-title {
+    flex: 1 1 100%;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .gwb-notification-time {
+    font-size: 0.72rem;
+  }
+
+  .gwb-notification-message {
+    font-size: 0.84rem;
+    -webkit-line-clamp: 3;
+  }
+
+  .gwb-notification-item:has(.gwb-notification-actions) {
+    flex-wrap: wrap;
+  }
+
+  .gwb-notification-actions {
+    width: 100%;
+    padding-left: 0;
+    margin-top: 0.35rem;
+  }
+
+  .gwb-notification-actions .btn-gwb-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .notifications-dropdown-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .notifications-dropdown-actions .notifications-view-all-btn {
+    grid-column: 1 / -1;
+  }
+
+  .notifications-dropdown-actions .btn-gwb-secondary {
+    font-size: 0.82rem;
+    padding: 0.5rem 0.65rem;
+  }
+
+  .gwb-card-header .d-flex.align-items-center.gap-2 {
+    width: 100%;
+    margin-top: 0.75rem;
+  }
+
+  .gwb-card-header .d-flex.align-items-center.gap-2 .btn-gwb-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .gwb-card-header {
+    flex-wrap: wrap;
+  }
+}
+
+
+/* ==========================================================================
+   Assign Plan Modal — member checkbox list
+   ========================================================================== */
+
+.gwb-member-assign-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gwb-member-assign-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 10px;
+  background: var(--gwb-surface-2, #1e1e28);
+  border: 1px solid var(--gwb-border, #2a2a35);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+  margin: 0;
+}
+
+.gwb-member-assign-item:hover {
+  border-color: rgba(255, 90, 31, 0.35);
+}
+
+.gwb-member-assign-item.is-selected,
+.gwb-member-assign-item:has(.gwb-assign-checkbox:checked) {
+  border-color: rgba(255, 90, 31, 0.55);
+  background: rgba(255, 90, 31, 0.08);
+  box-shadow: 0 0 0 1px rgba(255, 90, 31, 0.12);
+}
+
+.gwb-assign-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.gwb-assign-checkbox-ui {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 6px;
+  border: 2px solid var(--gwb-border, #64748b);
+  background: var(--gwb-surface, #ffffff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.gwb-assign-checkbox-ui i {
+  font-size: 0.7rem;
+  color: #ffffff;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.gwb-member-assign-item.is-selected .gwb-assign-checkbox-ui,
+.gwb-member-assign-item:has(.gwb-assign-checkbox:checked) .gwb-assign-checkbox-ui {
+  background: var(--gwb-orange, #ff5a1f);
+  border-color: var(--gwb-orange, #ff5a1f);
+}
+
+.gwb-member-assign-item.is-selected .gwb-assign-checkbox-ui i,
+.gwb-member-assign-item:has(.gwb-assign-checkbox:checked) .gwb-assign-checkbox-ui i {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.gwb-member-assign-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.gwb-member-assign-name {
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--gwb-text, #f5f3ef);
+  line-height: 1.25;
+}
+
+.gwb-member-assign-email {
+  font-size: 0.75rem;
+  color: var(--gwb-text-muted, #94a3b8);
+  margin-top: 0.1rem;
+}
+
+[data-theme="light"] .gwb-member-assign-item {
+  background: var(--gwb-bg-soft, #f8fafc);
+  border-color: var(--gwb-border, #cbd5e1);
+}
+
+[data-theme="light"] .gwb-member-assign-item.is-selected,
+[data-theme="light"] .gwb-member-assign-item:has(.gwb-assign-checkbox:checked) {
+  background: rgba(255, 90, 31, 0.07);
+  border-color: rgba(255, 90, 31, 0.45);
+}
+
+[data-theme="light"] .gwb-assign-checkbox-ui {
+  background: #ffffff;
+  border-color: #94a3b8;
+}
+
+[data-theme="light"] .gwb-member-assign-name {
+  color: var(--gwb-text, #0f172a);
+}
+
+[data-theme="light"] .gwb-member-assign-email {
+  color: var(--gwb-text-muted, #64748b);
+}
 

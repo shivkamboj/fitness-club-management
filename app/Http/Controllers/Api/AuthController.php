@@ -34,6 +34,19 @@ class AuthController extends Controller
                 'password' => $request->password,
             ]);
 
+            // Admin notification: new registration
+            $superAdmins = User::query()->where('role', User::ROLE_SUPER_ADMIN)->get();
+            foreach ($superAdmins as $admin) {
+                $this->sendNotification($admin->id, [
+                    'title' => 'New registration',
+                    'message' => 'A new gym owner registered: '.$user->name.' ('.$user->email.').',
+                    'type' => 'information',
+                    'module' => 'Admin',
+                    'reference_id' => $user->id,
+                    'reference_type' => 'user',
+                ]);
+            }
+
             $otp = $user->generateOtp();
 
             $this->sendOtpEmail(
@@ -75,6 +88,15 @@ class AuthController extends Controller
             'otp' => null,
             'otp_expires_at' => null,
         ])->save();
+
+        $this->sendNotification($user->id, [
+            'title' => 'Email verified',
+            'message' => 'Thanks for verifying your email. Welcome to '.config('app.name').'!',
+            'type' => 'success',
+            'module' => 'Authentication',
+            'reference_id' => $user->id,
+            'reference_type' => 'user',
+        ]);
 
         return $this->success('Email verified successfully.');
     }
@@ -124,6 +146,19 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (! $user || ! Hash::check($request->password, $user->password)) {
+            // Admin notification: failed login attempt
+            $superAdmins = User::query()->where('role', User::ROLE_SUPER_ADMIN)->get();
+            foreach ($superAdmins as $admin) {
+                $this->sendNotification($admin->id, [
+                    'title' => 'Failed login attempt',
+                    'message' => 'A login attempt failed for email: '.$request->email.'.',
+                    'type' => 'error',
+                    'module' => 'Admin',
+                    'reference_id' => null,
+                    'reference_type' => 'auth',
+                ]);
+            }
+
             return $this->error('Invalid email or password.', null, 401);
         }
 
@@ -205,6 +240,15 @@ class AuthController extends Controller
 
         $user->tokens()->delete();
 
+        $this->sendNotification($user->id, [
+            'title' => 'Password changed',
+            'message' => 'Your password has been updated successfully.',
+            'type' => 'success',
+            'module' => 'Authentication',
+            'reference_id' => $user->id,
+            'reference_type' => 'auth',
+        ]);
+
         return $this->success('Password changed successfully.');
     }
 
@@ -220,6 +264,15 @@ class AuthController extends Controller
         $user->forceFill([
             'password' => Hash::make($request->new_password),
         ])->save();
+
+        $this->sendNotification($user->id, [
+            'title' => 'Password updated',
+            'message' => 'Your password has been updated successfully.',
+            'type' => 'success',
+            'module' => 'Authentication',
+            'reference_id' => $user->id,
+            'reference_type' => 'auth',
+        ]);
 
         return $this->success('Password updated successfully.');
     }

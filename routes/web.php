@@ -14,6 +14,7 @@ use App\Http\Controllers\{
     SettingController,
     SocialAuthController
 };
+use App\Http\Controllers\Notifications\NotificationController;
 use App\Services\SocialAuthService;
 use App\Http\Controllers\SuperAdmin\{
     SuperAdminController,
@@ -101,6 +102,14 @@ Route::middleware('auth')->group(function () {
 
         return redirect()->route('login')->with('error', 'Access Denied.');
     })->name('dashboard');
+
+    // ── In-app Notifications (AJAX-backed) ────────────────────────────────
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount'])->name('notifications.unread-count');
+    Route::get('/notifications/latest', [NotificationController::class, 'latest'])->name('notifications.latest');
+    Route::get('/notifications/list', [NotificationController::class, 'list'])->name('notifications.list');
+    Route::post('/notifications/mark-read', [NotificationController::class, 'markRead'])->name('notifications.mark-read');
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])->name('notifications.mark-all-read');
 
     // ── SUPER ADMIN FLOW (Protected by role:super-admin) ──────────────────────
     Route::middleware('role:super-admin')->prefix('super-admin')->name('super-admin.')->group(function () {

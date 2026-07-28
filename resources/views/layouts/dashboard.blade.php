@@ -226,6 +226,51 @@
                         <span class="theme-toggle-label d-none d-lg-inline">Mode</span>
                     </button>
 
+                    <!-- Notifications Dropdown -->
+                    <div class="dropdown notifications-dropdown">
+                        <button
+                            class="btn btn-gwb-secondary notifications-bell-btn"
+                            type="button"
+                            id="notificationsBellBtn"
+                            data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside"
+                            aria-expanded="false"
+                            aria-label="Notifications"
+                            title="Notifications"
+                        >
+                            <i class="fa-regular fa-bell text-orange"></i>
+                            <span id="notificationsUnreadBadge" class="notifications-unread-badge d-none" aria-live="polite">0</span>
+                        </button>
+
+                        <div class="dropdown-menu dropdown-menu-dark dropdown-menu-end notifications-dropdown-menu p-2" aria-labelledby="notificationsBellBtn">
+                            <div id="notificationsDropdownLoading" class="notifications-dropdown-loading text-center py-3">
+                                <div class="spinner-border spinner-border-sm text-warning" role="status"></div>
+                                <div class="small text-muted mt-2">Loading…</div>
+                            </div>
+
+                            <div id="notificationsDropdownList" class="d-flex flex-column gap-2"></div>
+
+                            <div id="notificationsDropdownEmpty" class="text-center py-3 d-none">
+                                <i class="fa-regular fa-bell-slash fs-4 text-muted"></i>
+                                <div class="small text-muted mt-2">No notifications</div>
+                            </div>
+
+                            <hr class="border-secondary opacity-25 my-2">
+
+                            <div class="d-grid gap-2 notifications-dropdown-actions">
+                                <button type="button" class="btn-gwb-secondary btn-sm" id="notificationsMarkAsReadBtn" disabled>
+                                    <i class="fa-solid fa-check me-1"></i> Mark as Read
+                                </button>
+                                <button type="button" class="btn-gwb-secondary btn-sm" id="notificationsMarkAllReadBtnNavbar">
+                                    <i class="fa-solid fa-check-double me-1"></i> Mark All as Read
+                                </button>
+                                <a href="{{ route('notifications.index') }}" class="btn-gwb-secondary btn-sm text-center text-decoration-none notifications-view-all-btn">
+                                    <i class="fa-solid fa-eye me-1"></i> View All Notifications
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- User Menu Dropdown -->
                     <div class="dropdown">
                         <button class="btn btn-gwb-secondary dropdown-toggle py-2 px-3" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -296,6 +341,20 @@
             }
         });
     </script>
+
+    <script>
+        window.gwbNotifications = {
+            routes: {
+                unreadCount: @json(route('notifications.unread-count')),
+                latest: @json(route('notifications.latest')),
+                list: @json(route('notifications.list')),
+                markRead: @json(route('notifications.mark-read')),
+                markAllRead: @json(route('notifications.mark-all-read')),
+            }
+        };
+    </script>
+
+    <script src="{{ asset('js/notifications.js') }}"></script>
 
     @stack('scripts')
 </body>

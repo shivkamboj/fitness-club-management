@@ -91,7 +91,7 @@ class LeadController extends Controller
 
         $gymOwnerId = $this->getGymOwnerId();
 
-        Lead::create([
+        $lead = Lead::create([
             'gym_owner_id'   => $gymOwnerId,
             'name'           => $request->name,
             'phone'          => $request->phone,
@@ -103,6 +103,28 @@ class LeadController extends Controller
             'assigned_to'    => $request->assigned_to ?: null,
             'created_by'     => Auth::id(),
         ]);
+
+        // In-app notifications: new enquiry received
+        $this->sendNotification($gymOwnerId, [
+            'title' => 'New enquiry received',
+            'message' => $lead->name.' has submitted a new enquiry.',
+            'type' => 'information',
+            'module' => 'Gym Owner',
+            'reference_id' => $lead->id,
+            'reference_type' => 'lead',
+        ]);
+
+        // If a trainer is assigned, notify them too
+        if ($lead->assigned_to) {
+            $this->sendNotification((int) $lead->assigned_to, [
+                'title' => 'Lead assigned to you',
+                'message' => 'A new lead ('.$lead->name.') has been assigned to you. Please follow up.',
+                'type' => 'information',
+                'module' => 'Trainer',
+                'reference_id' => $lead->id,
+                'reference_type' => 'lead',
+            ]);
+        }
 
         return redirect()->route('gym-owner.leads.index')
             ->with('success', 'Lead enquiry created successfully.');

@@ -113,6 +113,26 @@ class TrainerController extends Controller
 
         $label = $updated->status === Trainer::STATUS_ACTIVE ? 'activated' : 'deactivated';
 
+        // In-app notification (Trainer activated/deactivated)
+        $this->sendNotification($updated->id, [
+            'title' => 'Trainer '.$label,
+            'message' => 'Your trainer account for '.$updated->gym_name.' has been '.$label.'.',
+            'type' => $updated->status === Trainer::STATUS_ACTIVE ? 'success' : 'warning',
+            'module' => 'Trainer',
+            'reference_id' => $updated->id,
+        ]);
+
+        // Notify gym owner as well
+        if ($updated->gym_owner_id) {
+            $this->sendNotification($updated->gym_owner_id, [
+                'title' => 'Trainer status updated',
+                'message' => $updated->full_name.' has been '.$label.' for '.$updated->gym_name.'.',
+                'type' => 'information',
+                'module' => 'Gym Owner',
+                'reference_id' => $updated->id,
+            ]);
+        }
+
         return response()->json([
             'success' => true,
             'message' => "Trainer {$label} successfully.",

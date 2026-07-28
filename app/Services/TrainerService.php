@@ -16,7 +16,8 @@ class TrainerService
     use SendsMail;
 
     public function __construct(
-        private readonly TrainerImageService $imageService
+        private readonly TrainerImageService $imageService,
+        private readonly NotificationService $notificationService
     ) {}
 
     /**
@@ -84,6 +85,25 @@ class TrainerService
         });
 
         $this->sendWelcomeEmail($trainer, $owner, $plainPassword);
+
+        // In-app notifications (Trainer created + Gym owner notified)
+        $gymName = $owner->gym_name ?: config('app.name');
+
+        $this->notificationService->sendToUser($trainer->id, [
+            'title' => 'Welcome, '.$trainer->full_name,
+            'message' => 'Your trainer account has been created for '.$gymName.'. Please log in to start managing classes and members.',
+            'type' => 'success',
+            'module' => 'Trainer',
+            'reference_id' => $trainer->id,
+        ]);
+
+        $this->notificationService->sendToUser($owner->id, [
+            'title' => 'New trainer added',
+            'message' => $trainer->full_name.' has joined your gym as a trainer.',
+            'type' => 'information',
+            'module' => 'Gym Owner',
+            'reference_id' => $trainer->id,
+        ]);
 
         return [
             'trainer' => $trainer->fresh(),

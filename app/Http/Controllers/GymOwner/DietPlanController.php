@@ -161,6 +161,12 @@ class DietPlanController extends Controller
             'meals.*.food_items.required'  => 'Food items are required for all meals.',
         ]);
 
+        $activeMemberIds = DB::table('diet_plan_assignments')
+            ->where('diet_plan_id', $dietPlan->id)
+            ->where('status', 'active')
+            ->pluck('user_id')
+            ->toArray();
+
         DB::transaction(function () use ($request, $dietPlan) {
             $dietPlan->update([
                 'name'          => $request->name,
@@ -192,6 +198,20 @@ class DietPlanController extends Controller
                 ]);
             }
         });
+
+        if (! empty($activeMemberIds)) {
+            $dietPlan->refresh();
+            foreach ($activeMemberIds as $memberId) {
+                $this->sendNotification((int) $memberId, [
+                    'title' => 'Diet Plan Updated',
+                    'message' => "Your diet plan '{$dietPlan->name}' has been updated. Check your member dashboard for your latest routine.",
+                    'type' => 'information',
+                    'module' => 'Diet & Nutrition Plans',
+                    'reference_id' => $dietPlan->id,
+                    'reference_type' => 'diet_plan',
+                ]);
+            }
+        }
 
         return redirect()->route('gym-owner.diet-plans.index')
             ->with('success', 'Diet plan updated successfully.');
@@ -234,7 +254,10 @@ class DietPlanController extends Controller
 
         $memberIds = $request->input('members', []);
 
-        DB::transaction(function () use ($dietPlan, $memberIds) {
+        $toAssign = [];
+        $toDeactivate = [];
+
+        DB::transaction(function () use ($dietPlan, $memberIds, &$toAssign, &$toDeactivate) {
             $currentlyAssigned = DB::table('diet_plan_assignments')
                 ->where('diet_plan_id', $dietPlan->id)
                 ->where('status', 'active')
@@ -273,6 +296,29 @@ class DietPlanController extends Controller
                 DB::table('diet_plan_assignments')->insert($insertData);
             }
         });
+
+        // In-app notifications:
+        foreach ($toAssign as $memberId) {
+            $this->sendNotification((int) $memberId, [
+                'title' => 'Diet Plan Assigned',
+                'message' => 'You have been assigned a new diet plan: '.$dietPlan->name.'.',
+                'type' => 'success',
+                'module' => 'Member',
+                'reference_id' => $dietPlan->id,
+                'reference_type' => 'diet_plan',
+            ]);
+        }
+
+        foreach ($toDeactivate as $memberId) {
+            $this->sendNotification((int) $memberId, [
+                'title' => 'Diet Plan Removed',
+                'message' => 'Your diet plan assignment has been removed. Please contact your gym for your next plan.',
+                'type' => 'warning',
+                'module' => 'Member',
+                'reference_id' => $dietPlan->id,
+                'reference_type' => 'diet_plan',
+            ]);
+        }
 
         return redirect()->route('gym-owner.diet-plans.index')
             ->with('success', 'Diet plan assignments updated successfully.');

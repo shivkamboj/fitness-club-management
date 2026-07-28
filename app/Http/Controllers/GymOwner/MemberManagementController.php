@@ -104,6 +104,24 @@ class MemberManagementController extends Controller
 
         $gymName = GymSetting::getValue($gymOwnerId, 'gym_name', Auth::user()->gym_name ?? 'GymForce');
 
+        // 1) Member registered / activated (in-app)
+        $this->sendNotification($member->id, [
+            'title' => 'Welcome to '.$gymName,
+            'message' => 'Your membership has been registered and your account is ready. Log in to start your workout plan.',
+            'type' => 'success',
+            'module' => 'Member',
+            'reference_id' => $member->id,
+        ]);
+
+        // 2) Gym Owner notified about new join
+        $this->sendNotification($gymOwnerId, [
+            'title' => 'New member joined',
+            'message' => $member->full_name.' has joined '.$gymName.'.',
+            'type' => 'information',
+            'module' => 'Gym Owner',
+            'reference_id' => $member->id,
+        ]);
+
         // 1. Send Email Notification with credentials
         try {
             $data = [
@@ -114,12 +132,12 @@ class MemberManagementController extends Controller
                 'login_url' => url('/login'),
             ];
 
-            $this->sendMail(
-                $member->email,
-                'Welcome to ' . $gymName . ' — Your Account Credentials',
-                'emails.member-credentials',
-                $data
-            );
+            $this->sendMail([
+                'to' => $member->email,
+                'subject' => 'Welcome to '.$gymName.' — Your Account Credentials',
+                'view' => 'emails.member-credentials',
+                'data' => $data,
+            ]);
 
             $mailSent = true;
         } catch (\Throwable $e) {
@@ -158,6 +176,8 @@ class MemberManagementController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        $previousStatus = (string) ($member->status ?? User::STATUS_ACTIVE);
+
         $request->validate([
             'name'         => 'required|string|max:255',
             'email'        => 'required|email|max:255|unique:users,email,' . $member->id,
@@ -188,6 +208,29 @@ class MemberManagementController extends Controller
         }
 
         $member->update($data);
+
+        // Member activated / deactivated (in-app) — only when status changes
+        if ((string) $member->status !== $previousStatus) {
+            $gymName = GymSetting::getValue($gymOwnerId, 'gym_name', Auth::user()->gym_name ?? 'GymForce');
+
+            if ((string) $member->status === User::STATUS_ACTIVE) {
+                $this->sendNotification($member->id, [
+                    'title' => 'Membership Approved & Activated',
+                    'message' => 'Your membership on '.$gymName.' is now active. Enjoy your workouts!',
+                    'type' => 'success',
+                    'module' => 'Member',
+                    'reference_id' => $member->id,
+                ]);
+            } else {
+                $this->sendNotification($member->id, [
+                    'title' => 'Membership Deactivated',
+                    'message' => 'Your membership on '.$gymName.' has been deactivated. Please contact the gym for details.',
+                    'type' => 'warning',
+                    'module' => 'Member',
+                    'reference_id' => $member->id,
+                ]);
+            }
+        }
 
         return redirect()->route('gym-owner.members.index')
             ->with('success', 'Member details updated successfully.');

@@ -175,6 +175,21 @@ class GroupClassController extends Controller
             'status'           => 'required|in:active,inactive',
         ]);
 
+        $oldStartDate = $class->start_date;
+        $oldStartTime = $class->start_time;
+        $oldScheduleDays = $class->schedule_days;
+        $oldTrainerId = $class->trainer_id;
+
+        $newScheduleDays = $request->schedule_days ?? [];
+        $newStartDate = $request->start_date;
+        $newStartTime = $request->start_time;
+        $newTrainerId = $request->trainer_id ?: null;
+
+        $isRescheduled = ((string) $oldStartDate !== (string) $newStartDate)
+            || ((string) $oldStartTime !== (string) $newStartTime)
+            || (json_encode($oldScheduleDays) !== json_encode($newScheduleDays))
+            || ((int) $oldTrainerId !== (int) $newTrainerId);
+
         $class->update([
             'name'             => $request->name,
             'description'      => $request->description,
@@ -189,6 +204,42 @@ class GroupClassController extends Controller
             'location'         => $request->location,
             'status'           => $request->status,
         ]);
+
+        // Notify enrolled members about class update / reschedule
+        $bookedMemberIds = GroupClassBooking::query()
+            ->where('group_class_id', $class->id)
+            ->where('status', 'booked')
+            ->pluck('user_id')
+            ->unique()
+            ->values()
+            ->toArray();
+
+        $class->load('trainer');
+        $occurrenceText = $this->buildClassOccurrenceText($class);
+
+        foreach ($bookedMemberIds as $memberId) {
+            $this->sendNotification((int) $memberId, [
+                'title' => $isRescheduled ? 'Class Rescheduled' : 'Class Updated',
+                'message' => $isRescheduled
+                    ? "Your class '{$class->name}' has been rescheduled {$occurrenceText}."
+                    : "Your class '{$class->name}' has been updated. {$occurrenceText}",
+                'type' => 'information',
+                'module' => 'Class & Schedules',
+                'reference_id' => $class->id,
+                'reference_type' => 'group_class',
+            ]);
+        }
+
+        if ($class->trainer) {
+            $this->sendNotification((int) $class->trainer->id, [
+                'title' => $isRescheduled ? 'Class Rescheduled' : 'Class Updated',
+                'message' => 'Your class "'.$class->name.'" has been '.($isRescheduled ? 'rescheduled' : 'updated')." {$occurrenceText}.",
+                'type' => 'information',
+                'module' => 'Trainer',
+                'reference_id' => $class->id,
+                'reference_type' => 'group_class',
+            ]);
+        }
 
         return redirect()->route('gym-owner.classes.index')
             ->with('success', 'Group class updated successfully.');
@@ -206,7 +257,42 @@ class GroupClassController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        // Capture recipients before cascade deletes bookings
+        $bookedMemberIds = GroupClassBooking::query()
+            ->where('group_class_id', $class->id)
+            ->where('status', 'booked')
+            ->pluck('user_id')
+            ->unique()
+            ->values()
+            ->toArray();
+
+        $class->load('trainer');
+        $trainerId = $class->trainer_id;
+
         $class->delete();
+
+        // Notify booked members about cancellation
+        foreach ($bookedMemberIds as $memberId) {
+            $this->sendNotification((int) $memberId, [
+                'title' => 'Class Cancelled',
+                'message' => "The class '{$class->name}' has been cancelled. Please contact the gym for alternatives.",
+                'type' => 'warning',
+                'module' => 'Class & Schedules',
+                'reference_id' => $class->id,
+                'reference_type' => 'group_class',
+            ]);
+        }
+
+        if ($trainerId) {
+            $this->sendNotification((int) $trainerId, [
+                'title' => 'Class Cancelled',
+                'message' => "Your class '{$class->name}' has been cancelled.",
+                'type' => 'warning',
+                'module' => 'Trainer',
+                'reference_id' => $class->id,
+                'reference_type' => 'group_class',
+            ]);
+        }
 
         return redirect()->route('gym-owner.classes.index')
             ->with('success', 'Group class deleted successfully.');
@@ -263,10 +349,47 @@ class GroupClassController extends Controller
             return back()->with('error', 'This class is already at full capacity.');
         }
 
-        GroupClassBooking::updateOrCreate(
+        $existing = GroupClassBooking::query()
+            ->where('group_class_id', $class->id)
+            ->where('user_id', (int) $request->user_id)
+            ->first();
+
+        $booking = GroupClassBooking::updateOrCreate(
             ['group_class_id' => $class->id, 'user_id' => $request->user_id],
             ['status' => 'booked', 'booked_at' => now()]
         );
+
+        // Notify only when enrollment is new (or previously not booked)
+        $shouldNotify = $existing === null || $existing->status !== 'booked' || (string) $booking->status !== 'booked';
+        if ($shouldNotify) {
+            $member = $booking->member()->first();
+            $class->loadMissing('trainer');
+            $trainer = $class->trainer;
+
+            $occurrenceText = $this->buildClassOccurrenceText($class);
+
+            if ($member) {
+                $this->sendNotification($member->id, [
+                    'title' => 'Enrolled in Class',
+                    'message' => "You have been enrolled in '{$class->name}' {$occurrenceText}.",
+                    'type' => 'success',
+                    'module' => 'Member',
+                    'reference_id' => $class->id,
+                    'reference_type' => 'group_class',
+                ]);
+            }
+
+            if ($trainer) {
+                $this->sendNotification($trainer->id, [
+                    'title' => 'New Member Enrolled',
+                    'message' => "A new member has been assigned to your '{$class->name}' class.",
+                    'type' => 'information',
+                    'module' => 'Trainer',
+                    'reference_id' => $class->id,
+                    'reference_type' => 'group_class',
+                ]);
+            }
+        }
 
         return back()->with('success', 'Member added to class roster.');
     }
@@ -283,8 +406,35 @@ class GroupClassController extends Controller
             abort(403);
         }
 
+        $booking->loadMissing(['member', 'groupClass.trainer']);
+        $member = $booking->member;
+        $class = $booking->groupClass;
+        $trainer = $class?->trainer;
+
         $classId = $booking->group_class_id;
         $booking->delete();
+
+        if ($member) {
+            $this->sendNotification($member->id, [
+                'title' => 'Removed from Class',
+                'message' => "You have been removed from the '{$class->name}' class roster.",
+                'type' => 'warning',
+                'module' => 'Class & Schedules',
+                'reference_id' => $classId,
+                'reference_type' => 'group_class',
+            ]);
+        }
+
+        if ($trainer) {
+            $this->sendNotification($trainer->id, [
+                'title' => 'Member Removed',
+                'message' => 'A member has been removed from your '.$class->name.' class.',
+                'type' => 'information',
+                'module' => 'Trainer',
+                'reference_id' => $classId,
+                'reference_type' => 'group_class',
+            ]);
+        }
 
         return redirect()->route('gym-owner.classes.roster', $classId)
             ->with('success', 'Member removed from class roster.');
@@ -302,10 +452,99 @@ class GroupClassController extends Controller
             abort(403);
         }
 
+        $booking->loadMissing(['member', 'groupClass.trainer']);
+        $member = $booking->member;
+        $class = $booking->groupClass;
+        $trainer = $class?->trainer;
+
+        $oldStatus = (string) ($booking->status ?? 'booked');
+
         $request->validate(['status' => 'required|in:booked,attended,cancelled']);
 
-        $booking->update(['status' => $request->status]);
+        $newStatus = (string) $request->status;
+        $booking->update(['status' => $newStatus]);
+
+        if ($member) {
+            if ($newStatus === 'attended') {
+                $this->sendNotification($member->id, [
+                    'title' => 'Class Attended',
+                    'message' => "Great job! You marked attendance for '{$class->name}'.",
+                    'type' => 'success',
+                    'module' => 'Class & Schedules',
+                    'reference_id' => $class->id,
+                    'reference_type' => 'group_class',
+                ]);
+            } elseif ($newStatus === 'cancelled' && $oldStatus !== 'cancelled') {
+                $this->sendNotification($member->id, [
+                    'title' => 'Booking Cancelled',
+                    'message' => "Your booking for '{$class->name}' has been cancelled.",
+                    'type' => 'warning',
+                    'module' => 'Class & Schedules',
+                    'reference_id' => $class->id,
+                    'reference_type' => 'group_class',
+                ]);
+            }
+        }
+
+        if ($trainer) {
+            if ($newStatus === 'attended') {
+                $this->sendNotification($trainer->id, [
+                    'title' => 'Member Attendance Recorded',
+                    'message' => 'A member marked attendance for your '.$class->name.' class.',
+                    'type' => 'information',
+                    'module' => 'Trainer',
+                    'reference_id' => $class->id,
+                    'reference_type' => 'group_class',
+                ]);
+            } elseif ($newStatus === 'cancelled' && $oldStatus !== 'cancelled') {
+                $this->sendNotification($trainer->id, [
+                    'title' => 'Booking Cancelled',
+                    'message' => 'A member booking was cancelled for your '.$class->name.' class.',
+                    'type' => 'information',
+                    'module' => 'Trainer',
+                    'reference_id' => $class->id,
+                    'reference_type' => 'group_class',
+                ]);
+            }
+        }
 
         return back()->with('success', 'Booking status updated.');
+    }
+
+    /**
+     * Build a human-friendly occurrence string like:
+     * "on Monday at 7:00 AM" (or a safe fallback).
+     */
+    private function buildClassOccurrenceText(GroupClass $class): string
+    {
+        $days = is_array($class->schedule_days) ? $class->schedule_days : [];
+        $abbr = $days[0] ?? null;
+
+        $dayMap = [
+            'Mon' => 'Monday',
+            'Tue' => 'Tuesday',
+            'Wed' => 'Wednesday',
+            'Thu' => 'Thursday',
+            'Fri' => 'Friday',
+            'Sat' => 'Saturday',
+            'Sun' => 'Sunday',
+        ];
+
+        $dayLabel = $abbr && isset($dayMap[$abbr]) ? $dayMap[$abbr] : ($abbr ?: 'your class day');
+
+        $timeLabel = null;
+        if (! empty($class->start_time)) {
+            try {
+                $timeLabel = \Carbon\Carbon::parse($class->start_time)->format('g:i A');
+            } catch (\Throwable $e) {
+                $timeLabel = (string) $class->start_time;
+            }
+        }
+
+        if ($timeLabel) {
+            return 'on '.$dayLabel.' at '.$timeLabel;
+        }
+
+        return 'on '.$dayLabel;
     }
 }
