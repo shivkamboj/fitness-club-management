@@ -29,7 +29,8 @@ use App\Http\Controllers\GymOwner\{
     GroupClassController,
     GymSettingController,
     LeadController,
-    WhatsAppNotificationController
+    WhatsAppNotificationController,
+    MemberManagementController
 };
 use App\Http\Controllers\Trainer\TrainerDashboardController;
 
@@ -113,7 +114,11 @@ Route::middleware('auth')->group(function () {
     // ── GYM OWNER FLOW (Protected by role:gym-owner) ─────────────────────────
     Route::middleware('role:gym-owner')->prefix('gym-owner')->name('gym-owner.')->group(function () {
         Route::get('/dashboard', [GymOwnerDashboardController::class, 'index'])->name('dashboard');
-        Route::get('/members', [MemberController::class, 'index'])->name('members.index');
+        // Members Management
+        Route::get('/members', [MemberManagementController::class, 'index'])->name('members.index');
+        Route::post('/members', [MemberManagementController::class, 'store'])->name('members.store');
+        Route::put('/members/{member}', [MemberManagementController::class, 'update'])->name('members.update');
+        Route::delete('/members/{member}', [MemberManagementController::class, 'destroy'])->name('members.destroy');
 
         Route::get('/trainers', [TrainerController::class, 'index'])->name('trainers.index');
         Route::post('/trainers', [TrainerController::class, 'store'])->name('trainers.store');
