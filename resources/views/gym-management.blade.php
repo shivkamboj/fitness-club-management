@@ -1,71 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gym Manager | Cloud Gym Management System</title>
-    <meta name="description" content="Purchase your gym management server — members, trainers, classes, payments, diet & workout plans on one secure cloud dashboard. Start hosting today.">
-    <meta name="keywords" content="gym management system, gym software, membership management, gym CRM, gym billing software, cloud gym server">
-    <meta name="author" content="Gym Manager">
+@extends('partials.marketing', ['type' => 'gsm'])
 
-    <meta property="og:title" content="Gym Manager | Cloud Gym Management System">
-    <meta property="og:description" content="Run your gym on our servers. Manage members, trainers, payments, and classes from one dashboard.">
-    <meta property="og:type" content="website">
-    <link rel="canonical" href="{{ url('/') }}">
-
-    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <script>
-        (function() {
-            const savedTheme = localStorage.getItem('gwb_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-            document.documentElement.setAttribute('data-theme', savedTheme);
-        })();
-    </script>
-</head>
-<body>
-
-    @include('partials.navbar-gms')
+@section('content')
 
     {{-- ============================= HERO ============================= --}}
-    {{-- <header class="gym_manager hero" id="hero">
-        <div class="container-gwb">
-            <div class="row align-items-center">
-                <div class="col-lg-8" data-aos="fade-up">
-                    <span class="hero-badge"><span class="dot"></span> Trusted by 98+ Gyms &amp; Studios</span>
-
-                    <p class="gwb-brand mb-3" style="font-size: clamp(1.6rem, 3.2vw, 2.4rem);">
-                        GYM<span> MANAGER</span>
-                    </p>
-                    <h1>
-                        The Complete <span class="gradient-text">Gym Management Solution</span> for Modern Fitness Clubs
-                    </h1>
-                    <p class="lead-gwb">
-                        Purchase a hosted gym management account — members, trainers, classes,
-                        payments, and reports in one dashboard. No hardware. No setup headaches.
-                        <br>
-                        Run Your Entire Gym on <span class="gradient-text">Our Cloud Server<span>
-                    </p>
-                    <div class="d-flex flex-wrap gap-3">
-                        <a href="#pricing" class="btn btn-gwb-primary">
-                            <i class="fa-solid fa-server me-2"></i> Buy Your Server
-                        </a>
-                        <a href="{{ route('register') }}" class="btn btn-gwb-outline">
-                            <i class="fa-solid fa-user-plus me-2"></i> Start Free Trial
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </header> --}}
-
     <header class="gym_manager hero" id="hero">
         <video class="hero-video-bg" autoplay muted loop playsinline preload="auto" aria-hidden="true">
             <source src="{{ asset('videos/gym_management_system_animation.mp4') }}" type="video/mp4">
@@ -292,6 +229,8 @@
                 <div class="col-lg-4">
                     <x-testimonial-card
                         name="Rohit Sharma"
+                        alt="Rohit Sharma"
+                        title="Rohit Sharma"
                         role="Owner, PowerHouse Gym"
                         quote="We stopped chasing Excel sheets. Members, dues, and renewals are finally in one place — and we did not buy any office PC for it."
                         avatar="https://randomuser.me/api/portraits/men/32.jpg"
@@ -300,6 +239,8 @@
                 <div class="col-lg-4">
                     <x-testimonial-card
                         name="Anita Desai"
+                        alt="Anita Desai"
+                        title="Anita Desai"
                         role="Founder, Prana Fitness"
                         quote="Buying the Pro server was the easiest decision. Staff log in from the front desk and I check reports from home."
                         avatar="https://randomuser.me/api/portraits/women/44.jpg"
@@ -308,6 +249,8 @@
                 <div class="col-lg-4">
                     <x-testimonial-card
                         name="Vikram Singh"
+                        alt="Vikram Singh"
+                        title="Vikram Singh"
                         role="Director, IronCore Chain"
                         quote="Multi-branch hosting let us run three locations without hiring an IT person. Support got us live in a day."
                         avatar="https://randomuser.me/api/portraits/men/67.jpg"
@@ -479,18 +422,4 @@
         </div>
     </section>
 
-    @include('partials.footer-gms')
-
-    <a href="https://wa.me/919999999999" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Chat on WhatsApp">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
-    <button class="back-to-top" id="backToTop" aria-label="Back to top">
-        <i class="fa-solid fa-arrow-up"></i>
-    </button>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    <script src="{{ asset('js/theme-toggle.js') }}"></script>
-    <script src="{{ asset('js/script.js') }}"></script>
-</body>
-</html>
+@endsection

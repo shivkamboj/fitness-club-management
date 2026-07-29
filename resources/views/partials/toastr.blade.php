@@ -1,16 +1,3 @@
-{{--
-    partials/toastr.blade.php
-    ─────────────────────────────────────────────────────────────────────────
-    Usage: @include('partials.toastr')
-
-    Include this partial ONCE per page, ideally just before </body>.
-    It loads the Toastify CSS + JS, exposes a global `showToast(msg, type)`
-    helper, and auto-fires any session flash messages (success / error /
-    info / warning).
-
-    The `showToast` function is used by auth.js for AJAX feedback.
-    ─────────────────────────────────────────────────────────────────────────
---}}
 
 {{-- Toastify CSS --}}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">

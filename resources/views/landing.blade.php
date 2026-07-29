@@ -1,49 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gym Website Builder | Professional Gym & Fitness Websites</title>
-    <meta name="description" content="Get a professional gym website in days — online membership, SEO, and digital marketing for gym owners, trainers, and yoga studios. One-time or subscription plans.">
-    <meta name="keywords" content="gym website, fitness website builder, gym website design, yoga studio website, fitness center website, gym web development">
-    <meta name="author" content="Gym Website Builder">
+@extends('partials.marketing', ['type' => 'gwb'])
 
-    {{-- Open Graph / SEO --}}
-    <meta property="og:title" content="Gym Website Builder | Professional Gym & Fitness Websites">
-    <meta property="og:description" content="Build your professional gym website in just a few days. Get more members with a beautiful website, online membership, SEO, and digital marketing.">
-    <meta property="og:type" content="website">
-    <link rel="canonical" href="{{ url('/') }}">
-
-    {{-- Favicon --}}
-    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
-
-    {{-- Fonts --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-
-    {{-- Bootstrap 5 --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-
-    {{-- Font Awesome --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-    {{-- AOS (Animate On Scroll) --}}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css">
-
-    {{-- App Styles --}}
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <script>
-        (function() {
-            const savedTheme = localStorage.getItem('gwb_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-            document.documentElement.setAttribute('data-theme', savedTheme);
-        })();
-    </script>
-</head>
-<body>
-
-    {{-- ============================= NAVBAR ============================= --}}
-    @include('partials.navbar')
+@section('content')
 
     {{-- ============================= HERO ============================= --}}
     <header class="hero" id="hero">
@@ -493,21 +450,4 @@
         </div>
     </section>
 
-    {{-- ============================= FOOTER ============================= --}}
-    @include('partials.footer')
-
-    {{-- Floating buttons --}}
-    <a href="https://wa.me/919999999999" target="_blank" rel="noopener" class="whatsapp-float" aria-label="Chat on WhatsApp">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
-    <button class="back-to-top" id="backToTop" aria-label="Back to top">
-        <i class="fa-solid fa-arrow-up"></i>
-    </button>
-
-    {{-- Scripts --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-    <script src="{{ asset('js/theme-toggle.js') }}"></script>
-    <script src="{{ asset('js/script.js') }}"></script>
-</body>
-</html>
+@endsection
