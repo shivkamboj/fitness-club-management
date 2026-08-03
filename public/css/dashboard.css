@@ -1234,3 +1234,38 @@ body.dashboard-body .display-font {
   color: var(--gwb-text-muted, #64748b);
 }
 
+/* ── Pagination Dark Theme Overrides ─────────────────────────────────────── */
+.pagination {
+  margin-bottom: 0;
+  gap: 4px;
+}
+
+.pagination .page-item .page-link {
+  background-color: var(--gwb-surface, #17171f);
+  border-color: var(--gwb-border, #2a2a35);
+  color: var(--gwb-text, #f5f3ef);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.pagination .page-item .page-link:hover {
+  background-color: rgba(255, 90, 31, 0.15);
+  border-color: var(--gwb-orange, #ff5a1f);
+  color: var(--gwb-orange, #ff5a1f);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--gwb-orange, #ff5a1f);
+  border-color: var(--gwb-orange, #ff5a1f);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.pagination .page-item.disabled .page-link {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: var(--gwb-border, #2a2a35);
+  color: rgba(255, 255, 255, 0.3);
+}
+

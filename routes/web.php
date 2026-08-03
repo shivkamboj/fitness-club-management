@@ -121,6 +121,8 @@ Route::middleware('auth')->group(function () {
         Route::patch('/gyms/{gymOwner}/toggle-status', [GymManagementController::class, 'toggleStatus'])->name('gyms.toggle-status');
         Route::delete('/gyms/{gymOwner}', [GymManagementController::class, 'destroy'])->name('gyms.destroy');
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
+        Route::patch('/users/{user}/toggle-status', [UserManagementController::class, 'toggleStatus'])->name('users.toggle-status');
+        Route::delete('/users/{user}', [UserManagementController::class, 'destroy'])->name('users.destroy');
         Route::get('/subscriptions', [PlatformSubscriptionController::class, 'index'])->name('subscriptions.index');
         Route::get('/contacts', [ContactRequestController::class, 'index'])->name('contacts.index');
     });

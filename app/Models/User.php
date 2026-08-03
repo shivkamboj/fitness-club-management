@@ -132,6 +132,34 @@ class User extends Authenticatable
             ->latest('workout_plan_assignments.created_at');
     }
 
+    public function dietPlans(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(DietPlan::class, 'diet_plan_assignments', 'user_id', 'diet_plan_id')
+            ->withPivot('assigned_by', 'assigned_at', 'status')
+            ->withTimestamps();
+    }
+
+    public function activeDietPlan()
+    {
+        return $this->belongsToMany(DietPlan::class, 'diet_plan_assignments', 'user_id', 'diet_plan_id')
+            ->wherePivot('status', 'active')
+            ->withPivot('assigned_by', 'assigned_at', 'status')
+            ->withTimestamps()
+            ->latest('diet_plan_assignments.created_at');
+    }
+
+    public function classBookings(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(GroupClassBooking::class, 'user_id');
+    }
+
+    public function groupClasses(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(GroupClass::class, 'group_class_bookings', 'user_id', 'group_class_id')
+            ->withPivot('status', 'booked_at')
+            ->withTimestamps();
+    }
+
     public function isSuperAdmin(): bool
     {
         return (int) $this->role === self::ROLE_SUPER_ADMIN;
@@ -145,6 +173,11 @@ class User extends Authenticatable
     public function isTrainer(): bool
     {
         return (int) $this->role === self::ROLE_TRAINER;
+    }
+
+    public function isMember(): bool
+    {
+        return (int) $this->role === self::ROLE_MEMBER || (int) $this->role === 5;
     }
 
     public function isActive(): bool
