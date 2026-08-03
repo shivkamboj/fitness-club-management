@@ -845,6 +845,42 @@ body.dashboard-body .display-font {
   color: #64748b;
 }
 
+/* ── Nav Pills & Day Tabs Theme Rules ─────────────────────────────────────── */
+.nav-pills .nav-link {
+  color: var(--gwb-text, #f5f3ef);
+  background-color: var(--gwb-surface-2, #1e1e28);
+  border: 1px solid var(--gwb-border, #2a2a35);
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 8px 18px;
+  transition: all 0.2s ease;
+}
+
+.nav-pills .nav-link:hover:not(.active) {
+  background-color: rgba(255, 90, 31, 0.12);
+  border-color: var(--gwb-orange, #ff5a1f);
+  color: var(--gwb-orange, #ff5a1f);
+}
+
+.nav-pills .nav-link.active {
+  background: linear-gradient(135deg, var(--gwb-orange, #ff5a1f), #d84307) !important;
+  color: #ffffff !important;
+  border-color: var(--gwb-orange, #ff5a1f) !important;
+  box-shadow: 0 4px 12px rgba(255, 90, 31, 0.3);
+}
+
+[data-theme="light"] .nav-pills .nav-link:not(.active) {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+[data-theme="light"] .nav-pills .nav-link:hover:not(.active) {
+  background-color: rgba(255, 90, 31, 0.12) !important;
+  border-color: var(--gwb-orange, #ff5a1f) !important;
+  color: var(--gwb-orange, #ff5a1f) !important;
+}
+
 
 /* ==========================================================================
    In-App Notifications UI
