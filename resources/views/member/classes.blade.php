@@ -45,10 +45,10 @@
                             <h4 class="fw-bold text-white mb-1 fs-5">{{ $class->name }}</h4>
                             <p class="text-muted small mb-3">{{ Str::limit($class->description ?: 'High energy group fitness session.', 90) }}</p>
 
-                            <div class="d-flex flex-column gap-2 small text-muted mb-3 bg-secondary p-2.5 rounded">
+                            <div class="gwb-widget-box d-flex flex-column gap-2 small text-muted mb-3 p-2.5">
                                 <div><i class="fa-solid fa-user-ninja me-2 text-warning"></i>Trainer: <strong class="text-white">{{ $class->trainer ? $class->trainer->full_name : 'Gym Staff' }}</strong></div>
                                 <div><i class="fa-solid fa-calendar-week me-2 text-orange"></i>Days: <strong class="text-white">{{ $class->schedule_days_display }}</strong></div>
-                                <div><i class="fa-solid fa-regular fa-clock me-2 text-info"></i>Time: <strong class="text-white">{{ $class->start_time ?: 'TBA' }}</strong></div>
+                                <div><i class="fa-solid fa-clock me-2 text-info"></i>Time: <strong class="text-white">{{ $class->start_time ?: 'TBA' }}</strong></div>
                                 @if($class->location)
                                     <div><i class="fa-solid fa-location-dot me-2 text-danger"></i>Studio: <strong class="text-white">{{ $class->location }}</strong></div>
                                 @endif
@@ -123,7 +123,7 @@
                             <td class="text-muted small">{{ $booking->created_at?->format('M d, Y') ?? '—' }}</td>
                             <td>
                                 @if($booking->status === 'booked')
-                                    <span class="badge bg-success">Active Booking</span>
+                                    <span class="badge bg-success text-white px-2 py-1">Active Booking</span>
                                 @else
                                     <span class="badge bg-secondary">Cancelled</span>
                                 @endif

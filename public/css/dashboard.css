@@ -777,6 +777,74 @@ body.dashboard-body .display-font {
   color: var(--gwb-text-muted, #475569) !important;
 }
 
+[data-theme="light"] body.dashboard-body .bg-secondary {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* ── Member Portal & Widget Surface Components ───────────────────────────── */
+.gwb-widget-box {
+  background-color: var(--gwb-surface-2, #1a1a24);
+  border: 1px solid var(--gwb-border, #2a2a35);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.2s ease;
+}
+
+[data-theme="light"] .gwb-widget-box {
+  background-color: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.gwb-macro-card {
+  background-color: var(--gwb-surface-2, #1a1a24);
+  border: 1px solid var(--gwb-border, #2a2a35);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gwb-macro-card:hover {
+  transform: translateY(-2px);
+}
+
+[data-theme="light"] .gwb-macro-card {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.gwb-macro-label {
+  font-size: 0.725rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gwb-text-muted, #9b9ba8);
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+[data-theme="light"] .gwb-macro-label {
+  color: #64748b;
+}
+
+.gwb-macro-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.gwb-macro-unit {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--gwb-text-muted, #9b9ba8);
+}
+
+[data-theme="light"] .gwb-macro-unit {
+  color: #64748b;
+}
+
 
 /* ==========================================================================
    In-App Notifications UI

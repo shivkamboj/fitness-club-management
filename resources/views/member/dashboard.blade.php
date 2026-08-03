@@ -37,7 +37,7 @@
                 <h4 class="fw-bold text-white mb-1 text-truncate" title="{{ $activeWorkoutPlan->name }}">{{ $activeWorkoutPlan->name }}</h4>
                 <div class="d-flex align-items-center justify-content-between mt-2">
                     <span class="badge bg-dark text-orange border border-secondary">{{ $activeWorkoutPlan->goal }}</span>
-                    <span class="small text-muted">{{ $todayCompletedExercisesCount }}/{{ $activeWorkoutPlan->exercises->count() }} done today</span>
+                    <span class="small text-muted fw-medium">{{ $todayCompletedExercisesCount }}/{{ $activeWorkoutPlan->exercises->count() }} done today</span>
                 </div>
             @else
                 <h5 class="fw-semibold text-muted mb-1">No Active Plan</h5>
@@ -80,7 +80,7 @@
             <h4 class="fw-bold text-white mb-1">{{ $upcomingBookings->count() }} Active {{ Str::plural('Booking', $upcomingBookings->count()) }}</h4>
             <div class="d-flex align-items-center justify-content-between mt-2">
                 <span class="small text-muted">Reserved seats</span>
-                <a href="{{ route('member.classes') }}" class="small text-info text-decoration-none">View all <i class="fa-solid fa-arrow-right ms-1"></i></a>
+                <a href="{{ route('member.classes') }}" class="small text-info text-decoration-none fw-semibold">View all <i class="fa-solid fa-arrow-right ms-1"></i></a>
             </div>
         </div>
     </div>
@@ -98,14 +98,14 @@
             <div class="d-flex align-items-center justify-content-between mt-2">
                 @if($daysRemaining !== null)
                     @if($daysRemaining > 7)
-                        <span class="badge bg-success text-white">{{ $daysRemaining }} days left</span>
+                        <span class="badge bg-success text-white px-2.5 py-1 fw-bold"><i class="fa-solid fa-circle-check me-1"></i>Active</span>
                     @elseif($daysRemaining >= 0)
-                        <span class="badge bg-warning text-dark">{{ $daysRemaining }} days left (Renew Soon)</span>
+                        <span class="badge bg-warning text-dark px-2.5 py-1 fw-bold"><i class="fa-solid fa-clock me-1"></i>{{ $daysRemaining }} days left</span>
                     @else
-                        <span class="badge bg-danger text-white">Expired</span>
+                        <span class="badge bg-danger text-white px-2.5 py-1 fw-bold"><i class="fa-solid fa-triangle-exclamation me-1"></i>Expired</span>
                     @endif
                 @else
-                    <span class="badge bg-success text-white">Active</span>
+                    <span class="badge bg-success text-white px-2.5 py-1 fw-bold"><i class="fa-solid fa-circle-check me-1"></i>Active</span>
                 @endif
                 <span class="small text-muted">{{ $expiresAt ? $expiresAt->format('M d, Y') : 'Ongoing' }}</span>
             </div>
@@ -121,25 +121,27 @@
         <div class="gwb-card mb-4">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <div class="d-flex align-items-center gap-2">
-                    <i class="fa-solid fa-dumbbell text-orange fs-4"></i>
+                    <div class="p-2 rounded bg-dark text-orange border border-secondary">
+                        <i class="fa-solid fa-dumbbell fs-5"></i>
+                    </div>
                     <div>
                         <h4 class="fw-bold text-white mb-0">Assigned Workout Routine</h4>
                         <span class="small text-muted">Daily exercises assigned by your trainer</span>
                     </div>
                 </div>
                 <a href="{{ route('member.workouts') }}" class="btn-gwb-primary btn-sm">
-                    <i class="fa-solid fa-arrow-right me-1"></i> Open Full Workout Split
+                    <i class="fa-solid fa-arrow-right me-1"></i> Open Workout Split
                 </a>
             </div>
 
             @if($activeWorkoutPlan && $activeWorkoutPlan->exercises->count() > 0)
-                <div class="p-3 bg-secondary rounded mb-3">
-                    <div class="d-flex align-items-center justify-content-between">
+                <div class="gwb-widget-box mb-3">
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
                         <div>
-                            <span class="fw-bold text-white fs-5">{{ $activeWorkoutPlan->name }}</span>
-                            <span class="badge bg-dark text-orange border border-secondary ms-2">{{ $activeWorkoutPlan->goal }}</span>
+                            <span class="fw-bold text-white fs-5 me-2">{{ $activeWorkoutPlan->name }}</span>
+                            <span class="badge bg-dark text-orange border border-secondary">{{ $activeWorkoutPlan->goal }}</span>
                         </div>
-                        <span class="small text-muted">{{ $activeWorkoutPlan->days_per_week }} Days / Week</span>
+                        <span class="small text-muted fw-medium"><i class="fa-solid fa-calendar-days text-orange me-1"></i>{{ $activeWorkoutPlan->days_per_week }} Days / Week</span>
                     </div>
                 </div>
 
@@ -148,7 +150,7 @@
                         <thead>
                             <tr>
                                 <th>Day</th>
-                                <th>Exercise</th>
+                                <th>Exercise Name</th>
                                 <th class="text-center">Sets × Reps</th>
                                 <th class="text-center">Rest</th>
                                 <th class="text-end">Guide</th>
@@ -188,7 +190,9 @@
         <div class="gwb-card">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <div class="d-flex align-items-center gap-2">
-                    <i class="fa-solid fa-apple-whole text-success fs-4"></i>
+                    <div class="p-2 rounded bg-dark text-success border border-secondary">
+                        <i class="fa-solid fa-apple-whole fs-5"></i>
+                    </div>
                     <div>
                         <h4 class="fw-bold text-white mb-0">Assigned Diet & Meals</h4>
                         <span class="small text-muted">Nutrition goals and daily meal plan</span>
@@ -200,43 +204,60 @@
             </div>
 
             @if($activeDietPlan)
+                <!-- Modern Macro Cards Grid -->
                 <div class="row g-2 mb-3">
                     <div class="col-6 col-sm-3">
-                        <div class="p-2 bg-secondary rounded text-center">
-                            <span class="small text-muted d-block">Calories</span>
-                            <strong class="text-warning fs-5">{{ number_format($activeDietPlan->total_calories) }}</strong> <span class="small text-muted">kcal</span>
+                        <div class="gwb-macro-card">
+                            <span class="gwb-macro-label">Calories</span>
+                            <div>
+                                <span class="gwb-macro-value text-warning">{{ number_format($activeDietPlan->total_calories) }}</span>
+                                <span class="gwb-macro-unit">kcal</span>
+                            </div>
                         </div>
                     </div>
                     <div class="col-6 col-sm-3">
-                        <div class="p-2 bg-secondary rounded text-center">
-                            <span class="small text-muted d-block">Protein</span>
-                            <strong class="text-info fs-5">{{ $activeDietPlan->protein_g }}</strong> <span class="small text-muted">g</span>
+                        <div class="gwb-macro-card">
+                            <span class="gwb-macro-label">Protein</span>
+                            <div>
+                                <span class="gwb-macro-value text-info">{{ $activeDietPlan->protein_g }}</span>
+                                <span class="gwb-macro-unit">g</span>
+                            </div>
                         </div>
                     </div>
                     <div class="col-6 col-sm-3">
-                        <div class="p-2 bg-secondary rounded text-center">
-                            <span class="small text-muted d-block">Carbs</span>
-                            <strong class="text-success fs-5">{{ $activeDietPlan->carbs_g }}</strong> <span class="small text-muted">g</span>
+                        <div class="gwb-macro-card">
+                            <span class="gwb-macro-label">Carbs</span>
+                            <div>
+                                <span class="gwb-macro-value text-success">{{ $activeDietPlan->carbs_g }}</span>
+                                <span class="gwb-macro-unit">g</span>
+                            </div>
                         </div>
                     </div>
                     <div class="col-6 col-sm-3">
-                        <div class="p-2 bg-secondary rounded text-center">
-                            <span class="small text-muted d-block">Fat</span>
-                            <strong class="text-danger fs-5">{{ $activeDietPlan->fat_g }}</strong> <span class="small text-muted">g</span>
+                        <div class="gwb-macro-card">
+                            <span class="gwb-macro-label">Fat</span>
+                            <div>
+                                <span class="gwb-macro-value text-danger">{{ $activeDietPlan->fat_g }}</span>
+                                <span class="gwb-macro-unit">g</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 @if($activeDietPlan->meals && $activeDietPlan->meals->count() > 0)
-                    <div class="list-group list-group-flush bg-transparent">
+                    <div class="d-flex flex-column gap-2">
                         @foreach($activeDietPlan->meals->take(4) as $meal)
-                        <div class="list-group-item bg-transparent text-white border-secondary px-0 d-flex justify-content-between align-items-center">
+                        <div class="gwb-widget-box p-3 d-flex justify-content-between align-items-center">
                             <div>
-                                <span class="badge bg-dark text-success border border-secondary me-2">{{ $meal->meal_time ?: ('Meal ' . $meal->meal_number) }}</span>
-                                <strong class="text-white">{{ $meal->title }}</strong>
-                                <span class="small text-muted d-block ms-1">{{ $meal->description }}</span>
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-dark text-success border border-secondary">{{ $meal->meal_time ?: ('Meal ' . $meal->meal_number) }}</span>
+                                    <strong class="text-white fs-6">{{ $meal->title }}</strong>
+                                </div>
+                                <span class="small text-muted d-block">{{ $meal->description }}</span>
                             </div>
-                            <span class="badge bg-dark text-warning border border-secondary">{{ $meal->calories }} kcal</span>
+                            <span class="badge bg-dark text-warning border border-secondary px-2.5 py-1.5 fw-bold">
+                                <i class="fa-solid fa-fire me-1"></i>{{ $meal->calories }} kcal
+                            </span>
                         </div>
                         @endforeach
                     </div>
@@ -257,27 +278,27 @@
         <div class="gwb-card mb-4">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <h4 class="fw-bold text-white mb-0 fs-5"><i class="fa-solid fa-calendar-day text-info me-2"></i>My Booked Classes</h4>
-                <a href="{{ route('member.classes') }}" class="small text-info text-decoration-none">Manage</a>
+                <a href="{{ route('member.classes') }}" class="small text-info text-decoration-none fw-semibold">Manage</a>
             </div>
 
             @forelse($upcomingBookings as $booking)
-                <div class="p-3 bg-secondary rounded mb-2 border border-secondary">
+                <div class="gwb-widget-box mb-2 p-3">
                     <div class="d-flex justify-content-between align-items-start mb-1">
                         <h6 class="fw-bold text-white mb-0">{{ $booking->groupClass?->name }}</h6>
-                        <span class="badge bg-success">Booked</span>
+                        <span class="badge bg-success text-white px-2 py-1">Booked</span>
                     </div>
-                    <div class="small text-muted">
+                    <div class="small text-muted mt-1">
                         <i class="fa-solid fa-clock me-1 text-orange"></i>{{ $booking->groupClass?->start_time ?: 'Scheduled' }} ({{ $booking->groupClass?->duration_minutes }} mins)
                     </div>
                     @if($booking->groupClass?->trainer)
                         <div class="small text-muted mt-1">
-                            <i class="fa-solid fa-user-ninja me-1 text-warning"></i>Trainer: {{ $booking->groupClass->trainer->full_name }}
+                            <i class="fa-solid fa-user-ninja me-1 text-warning"></i>Trainer: <strong class="text-white">{{ $booking->groupClass->trainer->full_name }}</strong>
                         </div>
                     @endif
                 </div>
             @empty
                 <div class="text-center py-3 text-muted">
-                    <i class="fa-regular fa-calendar-xmark fs-3 mb-2"></i>
+                    <i class="fa-regular fa-calendar-xmark fs-3 mb-2 opacity-50"></i>
                     <p class="small mb-2">No class seats reserved currently.</p>
                     <a href="{{ route('member.classes') }}" class="btn-gwb-primary btn-sm">
                         <i class="fa-solid fa-calendar-plus me-1"></i> Browse Classes
@@ -289,13 +310,13 @@
         <!-- Gym Center & Support Card -->
         <div class="gwb-card">
             <h4 class="fw-bold text-white mb-3 fs-5"><i class="fa-solid fa-building-circle-check text-orange me-2"></i>My Gym Center</h4>
-            <div class="p-3 bg-secondary rounded mb-3">
-                <h5 class="fw-bold text-white mb-1">{{ $gymName }}</h5>
-                <p class="small text-muted mb-0"><i class="fa-solid fa-user-shield me-1"></i>Owner: {{ $member->gymOwner?->full_name ?: 'Gym Management' }}</p>
-                <p class="small text-muted mb-0"><i class="fa-regular fa-envelope me-1"></i>{{ $member->gymOwner?->email ?: 'support@gym.com' }}</p>
+            <div class="gwb-widget-box mb-3 p-3">
+                <h5 class="fw-bold text-white mb-1.5 fs-5">{{ $gymName }}</h5>
+                <p class="small text-muted mb-1"><i class="fa-solid fa-user-shield me-1.5 text-orange"></i>Owner: <strong class="text-white">{{ $member->gymOwner?->full_name ?: 'Gym Management' }}</strong></p>
+                <p class="small text-muted mb-0"><i class="fa-regular fa-envelope me-1.5 text-orange"></i>{{ $member->gymOwner?->email ?: 'owner@gym.com' }}</p>
             </div>
 
-            <div class="p-3 border border-secondary rounded">
+            <div class="p-3 border border-secondary rounded-3">
                 <div class="d-flex align-items-center gap-2 mb-2">
                     <i class="fa-solid fa-heart-pulse text-danger fs-5"></i>
                     <h6 class="fw-bold text-white mb-0">Stay Consistent!</h6>

@@ -18,13 +18,13 @@
         <div class="gwb-card h-100">
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <span class="badge bg-dark text-success border border-secondary">{{ $dietPlan->goal ?: 'Healthy Living' }}</span>
-                <span class="small text-muted">{{ $dietPlan->meals_per_day }} {{ Str::plural('Meal', $dietPlan->meals_per_day) }} / Day</span>
+                <span class="small text-muted font-medium">{{ $dietPlan->meals_per_day }} {{ Str::plural('Meal', $dietPlan->meals_per_day) }} / Day</span>
             </div>
 
             <h3 class="fw-bold text-white fs-4 mb-2">{{ $dietPlan->name }}</h3>
             <p class="text-muted small mb-4">{{ $dietPlan->description ?: 'Follow this meal routine daily for optimum workout recovery and performance.' }}</p>
 
-            <div class="p-3 bg-secondary rounded mb-4">
+            <div class="gwb-widget-box p-3 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <span class="text-muted small fw-semibold">TOTAL DAILY ENERGY</span>
                     <span class="fw-bold text-warning fs-5"><i class="fa-solid fa-fire me-1"></i>{{ number_format($dietPlan->total_calories) }} kcal</span>
@@ -38,7 +38,7 @@
             <h6 class="fw-bold text-white mb-3">Daily Macronutrient Targets</h6>
 
             <div class="d-flex flex-column gap-3">
-                <div class="p-3 rounded bg-dark border border-secondary">
+                <div class="gwb-widget-box p-3">
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <span class="text-white font-medium"><i class="fa-solid fa-drumstick-bite text-info me-2"></i>Protein</span>
                         <strong class="text-info fs-5">{{ $dietPlan->protein_g }}g</strong>
@@ -48,7 +48,7 @@
                     </div>
                 </div>
 
-                <div class="p-3 rounded bg-dark border border-secondary">
+                <div class="gwb-widget-box p-3">
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <span class="text-white font-medium"><i class="fa-solid fa-bowl-rice text-success me-2"></i>Carbohydrates</span>
                         <strong class="text-success fs-5">{{ $dietPlan->carbs_g }}g</strong>
@@ -58,7 +58,7 @@
                     </div>
                 </div>
 
-                <div class="p-3 rounded bg-dark border border-secondary">
+                <div class="gwb-widget-box p-3">
                     <div class="d-flex justify-content-between align-items-center mb-1">
                         <span class="text-white font-medium"><i class="fa-solid fa-cheese text-danger me-2"></i>Fats</span>
                         <strong class="text-danger fs-5">{{ $dietPlan->fat_g }}g</strong>
@@ -86,7 +86,7 @@
             @if($dietPlan->meals && $dietPlan->meals->count() > 0)
                 <div class="d-flex flex-column gap-3">
                     @foreach($dietPlan->meals as $meal)
-                    <div class="p-3 rounded bg-dark border border-secondary">
+                    <div class="gwb-widget-box p-3">
                         <div class="d-flex flex-column flex-sm-row justify-content-sm-between align-items-sm-center mb-2 gap-2">
                             <div class="d-flex align-items-center gap-2">
                                 <span class="badge bg-success text-white px-2 py-1">
