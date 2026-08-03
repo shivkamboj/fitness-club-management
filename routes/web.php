@@ -115,6 +115,11 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:super-admin')->prefix('super-admin')->name('super-admin.')->group(function () {
         Route::get('/dashboard', [SuperAdminController::class, 'index'])->name('dashboard');
         Route::get('/gyms', [GymManagementController::class, 'index'])->name('gyms.index');
+        Route::post('/gyms', [GymManagementController::class, 'store'])->name('gyms.store');
+        Route::get('/gyms/{gymOwner}', [GymManagementController::class, 'show'])->name('gyms.show');
+        Route::put('/gyms/{gymOwner}', [GymManagementController::class, 'update'])->name('gyms.update');
+        Route::patch('/gyms/{gymOwner}/toggle-status', [GymManagementController::class, 'toggleStatus'])->name('gyms.toggle-status');
+        Route::delete('/gyms/{gymOwner}', [GymManagementController::class, 'destroy'])->name('gyms.destroy');
         Route::get('/users', [UserManagementController::class, 'index'])->name('users.index');
         Route::get('/subscriptions', [PlatformSubscriptionController::class, 'index'])->name('subscriptions.index');
         Route::get('/contacts', [ContactRequestController::class, 'index'])->name('contacts.index');
