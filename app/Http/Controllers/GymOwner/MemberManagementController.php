@@ -89,17 +89,18 @@ class MemberManagementController extends Controller
         $lastName  = $nameParts[1] ?? '';
 
         $member = User::create([
-            'name'         => $request->name,
-            'first_name'   => $firstName,
-            'last_name'    => $lastName,
-            'email'        => strtolower(trim($request->email)),
-            'phone'        => trim($request->phone),
-            'password'     => Hash::make($plainPassword),
-            'role'         => User::ROLE_MEMBER,
-            'gym_owner_id' => $gymOwnerId,
-            'gender'       => $request->gender,
-            'joining_date' => $request->joining_date ?: now()->toDateString(),
-            'status'       => User::STATUS_ACTIVE,
+            'name'              => $request->name,
+            'first_name'        => $firstName,
+            'last_name'         => $lastName,
+            'email'             => strtolower(trim($request->email)),
+            'phone'             => trim($request->phone),
+            'password'          => Hash::make($plainPassword),
+            'role'              => User::ROLE_MEMBER,
+            'gym_owner_id'      => $gymOwnerId,
+            'gender'            => $request->gender,
+            'joining_date'      => $request->joining_date ?: now()->toDateString(),
+            'status'            => User::STATUS_ACTIVE,
+            'email_verified_at' => now(),
         ]);
 
         $gymName = GymSetting::getValue($gymOwnerId, 'gym_name', Auth::user()->gym_name ?? 'GymForce');

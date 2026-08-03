@@ -37,9 +37,10 @@
         $authUser = Auth::user();
         $isSuperAdmin = $authUser && method_exists($authUser, 'isSuperAdmin') ? $authUser->isSuperAdmin() : request()->is('super-admin*');
         $isTrainer = $authUser && method_exists($authUser, 'isTrainer') ? $authUser->isTrainer() : request()->is('trainer*');
+        $isMember = $authUser && method_exists($authUser, 'isMember') ? $authUser->isMember() : request()->is('member*');
         $dashboardHome = $isSuperAdmin
             ? route('super-admin.dashboard')
-            : ($isTrainer ? route('trainer.dashboard') : route('gym-owner.dashboard'));
+            : ($isTrainer ? route('trainer.dashboard') : ($isMember ? route('member.dashboard') : route('gym-owner.dashboard')));
     @endphp
 
     <div class="app-wrapper" id="appWrapper">
@@ -111,6 +112,28 @@
                     <a href="{{ route('gym-owner.leads.index') }}" class="nav-link-item {{ request()->routeIs('gym-owner.leads*') ? 'active' : '' }}">
                         <i class="fa-solid fa-headset nav-icon"></i>
                         <span class="nav-text">Leads & Enquiries</span>
+                    </a>
+                @elseif($isMember)
+                    <div class="menu-category">Member Portal</div>
+
+                    <a href="{{ route('member.dashboard') }}" class="nav-link-item {{ request()->routeIs('member.dashboard') ? 'active' : '' }}">
+                        <i class="fa-solid fa-chart-line nav-icon"></i>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
+
+                    <a href="{{ route('member.workouts') }}" class="nav-link-item {{ request()->routeIs('member.workouts*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-dumbbell nav-icon"></i>
+                        <span class="nav-text">My Workouts</span>
+                    </a>
+
+                    <a href="{{ route('member.diet-plan') }}" class="nav-link-item {{ request()->routeIs('member.diet-plan*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-apple-whole nav-icon"></i>
+                        <span class="nav-text">My Diet Plan</span>
+                    </a>
+
+                    <a href="{{ route('member.classes') }}" class="nav-link-item {{ request()->routeIs('member.classes*') ? 'active' : '' }}">
+                        <i class="fa-solid fa-calendar-days nav-icon"></i>
+                        <span class="nav-text">Group Classes</span>
                     </a>
                 @else
                     <!-- GYM OWNER SIDEBAR (Role = 2, Gym Subscriber) -->

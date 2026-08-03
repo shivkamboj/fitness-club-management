@@ -97,7 +97,7 @@ Route::middleware('auth')->group(function () {
         }
 
         if ($user && ((int)$user->role === 0 || (int)$user->role === 5)) {
-            return redirect()->route('member.workouts');
+            return redirect()->route('member.dashboard');
         }
 
         return redirect()->route('login')->with('error', 'Access Denied.');
@@ -167,14 +167,23 @@ Route::middleware('auth')->group(function () {
         Route::get('/classes/{class}/edit', [GroupClassController::class, 'edit'])->name('classes.edit');
         Route::put('/classes/{class}', [GroupClassController::class, 'update'])->name('classes.update');
         Route::delete('/classes/{class}', [GroupClassController::class, 'destroy'])->name('classes.destroy');
+        Route::patch('/classes/{class}/status', [GroupClassController::class, 'updateStatus'])->name('classes.status');
         Route::get('/classes/{class}/roster', [GroupClassController::class, 'roster'])->name('classes.roster');
         Route::post('/classes/{class}/roster/add', [GroupClassController::class, 'addMember'])->name('classes.roster.add');
         Route::delete('/classes/bookings/{booking}', [GroupClassController::class, 'removeMember'])->name('classes.roster.remove');
         Route::patch('/classes/bookings/{booking}/status', [GroupClassController::class, 'updateBookingStatus'])->name('classes.booking.status');
 
         Route::get('/plans', [PlanController::class, 'index'])->name('plans.index');
+        Route::post('/plans', [PlanController::class, 'store'])->name('plans.store');
+        Route::put('/plans/{plan}', [PlanController::class, 'update'])->name('plans.update');
+        Route::delete('/plans/{plan}', [PlanController::class, 'destroy'])->name('plans.destroy');
+
         Route::get('/payments', [PaymentController::class, 'index'])->name('payments.index');
+        Route::post('/payments', [PaymentController::class, 'store'])->name('payments.store');
+        Route::get('/payments/{payment}/invoice', [PaymentController::class, 'invoice'])->name('payments.invoice');
+
         Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+
         // Leads & Enquiries
         Route::get('/leads', [LeadController::class, 'index'])->name('leads.index');
         Route::post('/leads', [LeadController::class, 'store'])->name('leads.store');
@@ -184,8 +193,10 @@ Route::middleware('auth')->group(function () {
 
         // WhatsApp Notifications & Events
         Route::get('/notifications/whatsapp', [WhatsAppNotificationController::class, 'index'])->name('notifications.whatsapp');
-        Route::post('/notifications/whatsapp/templates', [WhatsAppNotificationController::class, 'updateTemplates'])->name('notifications.whatsapp.templates');
-        Route::post('/notifications/whatsapp/generate', [WhatsAppNotificationController::class, 'generateMessage'])->name('notifications.whatsapp.generate');
+        Route::post('/whatsapp-templates', [WhatsAppNotificationController::class, 'storeTemplate'])->name('notifications.whatsapp.store');
+        Route::put('/whatsapp-templates/{template}', [WhatsAppNotificationController::class, 'updateTemplate'])->name('notifications.whatsapp.update');
+        Route::delete('/whatsapp-templates/{template}', [WhatsAppNotificationController::class, 'destroyTemplate'])->name('notifications.whatsapp.destroy');
+        Route::post('/whatsapp-templates/send-manual', [WhatsAppNotificationController::class, 'sendManual'])->name('notifications.whatsapp.send-manual');
 
         // Gym Settings
         Route::get('/settings', [GymSettingController::class, 'index'])->name('settings.index');
@@ -210,8 +221,13 @@ Route::middleware('auth')->group(function () {
 
     // ── MEMBER FLOW ──────────────────────────────────────────────────────────
     Route::prefix('member')->name('member.')->group(function () {
+        Route::get('/dashboard', [App\Http\Controllers\Member\MemberDashboardController::class, 'index'])->name('dashboard');
         Route::get('/workouts', [WorkoutPlanController::class, 'memberWorkouts'])->name('workouts');
         Route::post('/workouts/toggle-complete', [WorkoutPlanController::class, 'toggleCompleteExercise'])->name('workouts.toggle-complete');
+        Route::get('/diet-plan', [App\Http\Controllers\Member\MemberDashboardController::class, 'dietPlan'])->name('diet-plan');
+        Route::get('/classes', [App\Http\Controllers\Member\MemberDashboardController::class, 'classes'])->name('classes');
+        Route::post('/classes/{groupClass}/book', [App\Http\Controllers\Member\MemberDashboardController::class, 'bookClass'])->name('classes.book');
+        Route::delete('/classes/bookings/{booking}', [App\Http\Controllers\Member\MemberDashboardController::class, 'cancelBooking'])->name('classes.cancel');
     });
 
 });
