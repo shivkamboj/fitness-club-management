@@ -476,10 +476,23 @@ body.dashboard-body .display-font {
   gap: 0.35rem;
 }
 
-.badge-active {
-  background-color: rgba(40, 167, 69, 0.15);
-  color: #28a745;
-  border: 1px solid rgba(40, 167, 69, 0.3);
+.badge-active,
+.badge-status.badge-active,
+.badge.bg-success,
+.badge-success,
+.meal-pill-tag {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  border-radius: 8px !important;
+  padding: 5px 14px !important;
+  border: none !important;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  letter-spacing: 0.01em !important;
 }
 
 .badge-warning {
@@ -727,10 +740,41 @@ body.dashboard-body .display-font {
 }
 
 /* ───────────────────────────────────────────────────────────────────────────
-   Bootstrap Utility Overrides for Light Mode (Fixes text-white / bg-dark)
-   ─────────────────────────────────────────────────────────────────────────── */
-[data-theme="light"] body.dashboard-body .text-white:not(.btn):not(.btn *):not(.brand-icon *):not(.badge-active *):not(.badge-danger *):not(.badge-warning *):not(.badge-success *):not(.badge-primary *) {
+[data-theme="light"] body.dashboard-body .text-white:not(.btn):not(.btn *):not(.brand-icon *):not(.badge):not(.badge *):not(.badge-active):not(.badge-active *):not(.badge-danger):not(.badge-danger *):not(.badge-warning):not(.badge-warning *):not(.badge-success):not(.badge-success *):not(.badge-primary):not(.badge-primary *):not(.bg-success):not(.bg-success *):not(.bg-danger):not(.bg-danger *):not(.bg-primary):not(.bg-primary *) {
   color: var(--gwb-text, #0f172a) !important;
+}
+
+/* Badge Contrast & Emerald Pill Overrides */
+.badge.bg-success,
+.badge-status.badge-active,
+.badge-active,
+.badge-success,
+.meal-pill-tag {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+  border: none !important;
+}
+
+[data-theme="light"] .badge.bg-success,
+[data-theme="light"] .badge-status.badge-active,
+[data-theme="light"] .badge-active,
+[data-theme="light"] .badge-success,
+[data-theme="light"] .meal-pill-tag {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+  border: none !important;
+}
+
+[data-theme="light"] .badge.bg-success *,
+[data-theme="light"] .badge-status.badge-active *,
+[data-theme="light"] .badge-active *,
+[data-theme="light"] .badge-success *,
+[data-theme="light"] .meal-pill-tag * {
+  color: #ffffff !important;
 }
 
 [data-theme="light"] body.dashboard-body .text-white-50 {
